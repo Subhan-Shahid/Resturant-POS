@@ -11,7 +11,7 @@ export default function SearchBar({ placeholder = 'Search...', onChange }) {
   }, [q, onChange])
 
   return (
-    <div style={{ position:'relative', minWidth: 260 }}>
+    <div className="search-bar" style={{ position:'relative', minWidth: 'min(260px, 100%)' }}>
       <SearchIcon size={18} style={{ position:'absolute', left: 10, top: '50%', transform:'translateY(-50%)', color:'#94a3b8' }} />
       <Input
         type="text"

@@ -207,7 +207,7 @@ export default function Dashboard() {
         </Card>
 
         {/* KPI Grid */}
-        <div className="grid" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16}}>
+        <div className="grid" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))', gap: 16}}>
           <KPICard 
             title="Gross Sales" 
             value={formatMoney(kpisToday.gross)} 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Printer, Minus, Plus } from 'lucide-react'
+import { Printer, Minus, Plus, ShoppingCart, X } from 'lucide-react'
 import SearchBar from '../components/SearchBar.jsx'
 import ItemCard from '../components/ItemCard.jsx'
 import { listItems, searchItems, updateItem, deleteItem, setBill, nextToken, getRestaurantInfo, addSale, getLastToken, setLastToken, isTokenClosed, getActiveBusinessDateId, getPrinterConfig } from '../utils/storage.js'
@@ -35,6 +35,7 @@ export default function UnifiedPos() {
   const [finalized, setFinalized] = useState(false)
   const [showReceiptPreview, setShowReceiptPreview] = useState(false)
   const [receiptHtml, setReceiptHtml] = useState('')
+  const [cartOpen, setCartOpen] = useState(false)
 
   const dialog = useDialog()
   const [tokensClosed, setTokensClosed] = useState(() => { try { return isTokenClosed() } catch { return false } })
@@ -258,6 +259,7 @@ export default function UnifiedPos() {
     const printed = await printReceiptSilent(receiptData)
     if (printed) {
       clearCart(true)
+      setCartOpen(false)
     } else {
       setShowReceiptPreview(true)
     }
@@ -266,6 +268,7 @@ export default function UnifiedPos() {
   const handleReceiptOK = () => {
     setShowReceiptPreview(false)
     clearCart(true)
+    setCartOpen(false)
   }
 
   const handleReceiptPrint = async () => {
@@ -358,10 +361,22 @@ export default function UnifiedPos() {
         </div>
       </div>
 
-      <aside className="card sidebar order-card">
+      {cart.length > 0 && !cartOpen && (
+        <button type="button" className="pos-cart-bar" onClick={()=>setCartOpen(true)}>
+          <span className="pos-cart-count"><ShoppingCart size={18} /> {cart.reduce((s, r) => s + r.qty, 0)}</span>
+          <span>View Order</span>
+          <span className="price">Rs.{grandTotal.toFixed(0)}</span>
+        </button>
+      )}
+      <div className={`pos-cart-backdrop ${cartOpen ? 'open' : ''}`} onClick={()=>setCartOpen(false)} />
+
+      <aside className={`card sidebar order-card ${cartOpen ? 'open' : ''}`}>
         <div className="order-card-head">
           <div className="card-title">Current Order</div>
-          <div className="muted">Token {tokenNumber || '-'} </div>
+          <div className="row" style={{gap:8}}>
+            <div className="muted">Token {tokenNumber || '-'} </div>
+            <button type="button" className="icon-btn pos-cart-close" aria-label="Close order" onClick={()=>setCartOpen(false)}><X size={16} /></button>
+          </div>
         </div>
 
         
@@ -572,7 +587,7 @@ export default function UnifiedPos() {
               overflowX: 'hidden',
               textAlign: 'center'
             }}>
-              <div dangerouslySetInnerHTML={{__html: receiptHtml}} />
+              <div className="receipt-preview" dangerouslySetInnerHTML={{ __html: receiptHtml }} />
             </div>
             
             <div style={{
