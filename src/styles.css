@@ -377,3 +377,6 @@ img,video{max-width:100%}
 }
 
 @keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.receipt-preview{color:#000;background:#fff}
+.receipt-preview *{color:inherit}

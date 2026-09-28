@@ -575,7 +575,7 @@ export default function SaleHistory(){
               overflowX: 'hidden',
               textAlign: 'center'
             }}>
-              <div dangerouslySetInnerHTML={{ __html: receiptHtml }} />
+              <div className="receipt-preview" dangerouslySetInnerHTML={{ __html: receiptHtml }} />
             </div>
             
             <div style={{
