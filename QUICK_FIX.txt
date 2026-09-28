@@ -1,0 +1,104 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║         "Silent print not available" - QUICK FIX               ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+PROBLEM:
+--------
+When you click "Print Invoice", you see this alert:
+  "Silent print not available. Please restart the app."
+
+
+SOLUTION (3 SIMPLE STEPS):
+---------------------------
+
+┌─ STEP 1: CLOSE THE APP ────────────────────────────────────────┐
+│                                                                │
+│  • Close the Burger Lub POS window                            │
+│  • Press Ctrl+Alt+Delete → Task Manager                       │
+│  • Find "Burger Lub POS" or "Electron"                        │
+│  • Click "End Task"                                           │
+│                                                                │
+│  ✓ Make sure app is COMPLETELY closed!                        │
+│                                                                │
+└────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 2: RUN THE SCRIPT ───────────────────────────────────────┐
+│                                                                │
+│  • Double-click "start-app.bat" file                          │
+│                                                                │
+│  It will automatically:                                        │
+│    1. Build the app (npm run build)                           │
+│    2. Start the app (npm start)                               │
+│                                                                │
+│  ⏱ Wait 30-60 seconds for build to complete                   │
+│                                                                │
+└────────────────────────────────────────────────────────────────┘
+
+┌─ STEP 3: TEST PRINTING ────────────────────────────────────────┐
+│                                                                │
+│  • Add items to cart                                          │
+│  • Click "Print Invoice"                                      │
+│                                                                │
+│  ✓ Receipt should print WITHOUT any dialog!                   │
+│                                                                │
+└────────────────────────────────────────────────────────────────┘
+
+
+WHY THIS HAPPENS:
+-----------------
+The print function (printSilent) is loaded when Electron starts.
+If you make changes, you MUST restart the app completely.
+
+
+MANUAL METHOD (Alternative):
+-----------------------------
+If start-app.bat doesn't work, run these commands:
+
+  1. Close app completely
+  2. Open terminal/command prompt
+  3. Run: npm run build
+  4. Run: npm start
+
+
+VERIFY IT'S WORKING:
+--------------------
+After app starts, press F12 and type in Console:
+
+  window.burgerPos
+
+You should see:
+  {
+    getMachineId: function,
+    activate: function,
+    printSilent: function  ← This must be present!
+  }
+
+
+STILL NOT WORKING?
+------------------
+Check these:
+
+  □ Printer is turned ON
+  □ Printer has paper
+  □ Printer is set as DEFAULT in Windows
+    (Settings → Devices → Printers & scanners)
+  □ App is running in Electron (not browser)
+  □ You ran "npm run build" before starting
+
+
+NEED MORE HELP?
+---------------
+See detailed guides:
+  • URDU_TROUBLESHOOTING.md (Urdu guide)
+  • VERIFICATION_CHECKLIST.md (Full checklist)
+  • SILENT_PRINTING_GUIDE.md (Complete documentation)
+
+
+═══════════════════════════════════════════════════════════════════
+
+TIP: Always use "start-app.bat" to start the app!
+     It ensures everything is built correctly.
+
+═══════════════════════════════════════════════════════════════════

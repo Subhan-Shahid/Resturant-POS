@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Development logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment variables (if any)
+.env.local
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+release/
+node_modules/
+dist/

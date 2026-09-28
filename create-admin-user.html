@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Admin User</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 400px; margin: 0 auto; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; margin: 10px 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Admin User for Restaurant POS</h2>
+        <p>This will create an admin user with:</p>
+        <ul>
+            <li><strong>Username:</strong> admin</li>
+            <li><strong>Password:</strong> 123</li>
+            <li><strong>Role:</strong> Admin</li>
+        </ul>
+        
+        <button class="btn" onclick="createAdminUser()">Create Admin User</button>
+        <button class="btn" onclick="checkUsers()">Check Existing Users</button>
+        <button class="btn" onclick="clearUsers()">Clear All Users</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function createAdminUser() {
+            try {
+                const adminUser = {
+                    id: Math.random().toString(36).slice(2,10),
+                    name: 'Administrator',
+                    username: 'admin',
+                    password: '123',
+                    role: 'Admin'
+                };
+                
+                // Get existing users or create empty array
+                let users = JSON.parse(localStorage.getItem('users') || '[]');
+                
+                // Check if admin user already exists
+                const existingAdmin = users.find(u => u.username === 'admin');
+                if (existingAdmin) {
+                    document.getElementById('result').innerHTML = '<p class="error">Admin user already exists!</p>';
+                    return;
+                }
+                
+                users.push(adminUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                document.getElementById('result').innerHTML = 
+                    '<p class="success">✅ Admin user created successfully!</p>' +
+                    '<p><strong>Login credentials:</strong></p>' +
+                    '<p>Username: <strong>admin</strong></p>' +
+                    '<p>Password: <strong>123</strong></p>' +
+                    '<p>You can now log into the Restaurant POS application.</p>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+            }
+        }
+        
+        function checkUsers() {
+            try {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                let html = '<h3>Existing Users:</h3>';
+                if (users.length === 0) {
+                    html += '<p>No users found.</p>';
+                } else {
+                    users.forEach(user => {
+                        html += `<p><strong>${user.name}</strong> (${user.username}) - Role: ${user.role || 'No role'}</p>`;
+                    });
+                }
+                document.getElementById('result').innerHTML = html;
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+            }
+        }
+        
+        function clearUsers() {
+            if (confirm('Are you sure you want to delete all users?')) {
+                localStorage.removeItem('users');
+                document.getElementById('result').innerHTML = '<p class="success">All users cleared!</p>';
+            }
+        }
+    </script>
+</body>
+</html>

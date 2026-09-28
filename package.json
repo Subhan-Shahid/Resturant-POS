@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "restaurant-manager",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Resturant POS - A complete restaurant point of sale system",
+  "author": "DevOra",
+  "type": "module",
+  "main": "main.js",
+  "productName": "Resturant POS",
+  "scripts": {
+    "dev": "node dev-start.js",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "electron .",
+    "gen-key": "node gen-key.js --name 'Resturant Customer' --days 365 --bind",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.22",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^26.8.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "tailwindcss-animate": "^1.0.7",
+    "vite": "^5.4.0",
+    "wait-on": "^9.0.1"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^3.30.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.25",
+    "lucide-react": "^0.556.0",
+    "node-machine-id": "^1.1.12",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.26.2",
+    "tailwind-merge": "^3.4.0"
+  },
+  "build": {
+    "appId": "com.resturant.pos.manager",
+    "productName": "Resturant POS",
+    "executableName": "ResturantPOS",
+    "copyright": "Copyright © 2026 DevOra",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.cjs",
+      "renderer/**",
+      "license.js",
+      "gen-key.js",
+      "assets/**",
+      "dist/**"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Resturant POS",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "uninstallDisplayName": "Resturant POS",
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "Resturant_POS_Setup_${version}.${ext}"
+    }
+  }
+}
