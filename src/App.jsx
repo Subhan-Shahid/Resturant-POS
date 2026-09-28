@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { Menu as MenuIcon, X } from 'lucide-react'
 import { getCurrentUser, isTokenClosed, getDayOpenAt, openDay, getActiveBusinessDateId, getBusinessDateId } from './utils/storage.js'
 import Navbar from './components/Navbar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -18,6 +19,7 @@ import DayClose from './pages/DayClose.jsx'
 import DayOpen from './pages/DayOpen.jsx'
 import BusinessDateBadge from './components/BusinessDateBadge.jsx'
 import RecentSales from './pages/RecentSales.jsx'
+import MobileTabBar from './components/MobileTabBar.jsx'
 
 export default function App() {
   useEffect(()=>{
@@ -53,6 +55,8 @@ export default function App() {
   }
 
   const location = useLocation()
+  const [navOpen, setNavOpen] = useState(false)
+  useEffect(() => { setNavOpen(false) }, [location.pathname])
   const showShell = location.pathname !== '/login'
   const fullWidthPaths = ['/', '/pos']
   const isFullPage = fullWidthPaths.includes(location.pathname)
@@ -89,21 +93,24 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${navOpen ? 'nav-open' : ''}`}>
       <aside className="shell-sidebar">
+        <button type="button" className="icon-btn shell-drawer-close" aria-label="Close menu" onClick={()=>setNavOpen(false)}><X size={18} /></button>
         <Navbar />
       </aside>
+      <div className="shell-backdrop" onClick={()=>setNavOpen(false)} />
       <div className="shell-main">
         <header className="shell-header">
-          <div className="shell-header-right" style={{display:'flex', justifyContent:'flex-end', width:'100%'}}>
+          <button type="button" className="icon-btn shell-menu-btn" aria-label="Open menu" onClick={()=>setNavOpen(true)}><MenuIcon size={20} /></button>
+          <div className="shell-header-right">
             <BusinessDateBadge />
           </div>
         </header>
         <main className={`shell-content container ${isFullPage ? 'full' : ''}`}>
           {routes}
         </main>
+        <MobileTabBar onMore={()=>setNavOpen(true)} />
       </div>
     </div>
   )
 }
-
