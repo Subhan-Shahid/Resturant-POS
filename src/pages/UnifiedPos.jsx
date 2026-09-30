@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Printer, Minus, Plus } from 'lucide-react'
+import { Printer, Minus, Plus, ShoppingCart, X } from 'lucide-react'
 import SearchBar from '../components/SearchBar.jsx'
 import ItemCard from '../components/ItemCard.jsx'
 import { listItems, searchItems, updateItem, deleteItem, setBill, nextToken, getRestaurantInfo, addSale, getLastToken, setLastToken, isTokenClosed, getActiveBusinessDateId, getPrinterConfig } from '../utils/storage.js'
@@ -35,9 +35,19 @@ export default function UnifiedPos() {
   const [finalized, setFinalized] = useState(false)
   const [showReceiptPreview, setShowReceiptPreview] = useState(false)
   const [receiptHtml, setReceiptHtml] = useState('')
+  const [mobileOrderOpen, setMobileOrderOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const dialog = useDialog()
   const [tokensClosed, setTokensClosed] = useState(() => { try { return isTokenClosed() } catch { return false } })
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Load all items from all categories
   const [allItems, setAllItems] = useState([])
@@ -311,30 +321,195 @@ export default function UnifiedPos() {
     { id: 'extras', label: 'Extras' },
   ]
 
+  // Mobile order content component
+  function MobileOrderContent({
+    cart, tokenNumber, orderType, setOrderType, customerName, setCustomerName,
+    deliveryCharges, setDeliveryCharges, deliveryOptions, setDeliveryOptions,
+    customDeliveryInput, setCustomDeliveryInput, discountPct, setDiscountPct,
+    paidAmount, setPaidAmount, total, deliveryAmt, discountAmount, grandTotal,
+    changeQty, removeRow, tokensClosed, handleOkDone, isMobile
+  }) {
+    return (
+      <>
+        <div className="muted" style={{marginBottom: '8px', fontSize:isMobile ? 12 : 13}}>Token {tokenNumber || '-'}</div>
+
+        <div className="segmented" style={{marginBottom: '12px'}}>
+          <button className={`seg-btn ${orderType==='dine-in'?'active':''}`} onClick={()=>setOrderType('dine-in')} style={{fontSize:isMobile ? 12 : 13}}>Dine-in</button>
+          <button className={`seg-btn ${orderType==='take-away'?'active':''}`} onClick={()=>setOrderType('take-away')} style={{fontSize:isMobile ? 12 : 13}}>Take-Away</button>
+          <button className={`seg-btn ${orderType==='delivery'?'active':''}`} onClick={()=>setOrderType('delivery')} style={{fontSize:isMobile ? 12 : 13}}>Delivery</button>
+        </div>
+
+        <div className="form" style={{marginBottom: '12px'}}>
+          <label className="muted" style={{fontSize:isMobile ? 12 : 13}}>Customer Name</label>
+          <input className="input" placeholder="Customer Name" value={customerName} onChange={(e)=>setCustomerName(e.target.value)} style={{fontSize:isMobile ? 13 : 14}} />
+        </div>
+
+        <div className="order-list" style={{marginBottom: '12px'}}>
+          <div className="bill-head" style={{fontSize:isMobile ? 11 : 12}}>
+            <div>Item</div>
+            <div>Qty</div>
+            <div>Total</div>
+            <div></div>
+          </div>
+          {cart.length === 0 && <div className="muted" style={{padding: '10px 0', fontSize:isMobile ? 12 : 13}}>Empty</div>}
+          {cart.map(row => (
+            <div className="order-item" key={row.id}>
+              <div className="grow">
+                <div className="item-name" style={{fontSize:isMobile ? 12 : 13}}>{row.name}</div>
+              </div>
+              <div className="qty-ctrl">
+                <button className="icon-btn" aria-label="Decrease" onClick={()=>changeQty(row.id, Math.max(1, (row.qty||1)-1))}><Minus size={isMobile ? 14 : 16} /></button>
+                <input className="input qty small" type="number" min="1" value={row.qty} onChange={(e)=>changeQty(row.id, parseInt(e.target.value||'1',10))} style={{fontSize:isMobile ? 12 : 13}} />
+                <button className="icon-btn" aria-label="Increase" onClick={()=>changeQty(row.id, (row.qty||1)+1)}><Plus size={isMobile ? 14 : 16} /></button>
+              </div>
+              <div className="price" style={{fontSize:isMobile ? 12 : 13}}>Rs.{(row.price*row.qty).toFixed(2)}</div>
+              <button className="icon-btn danger" title="Remove" onClick={()=>removeRow(row.id)} style={{fontSize:isMobile ? 12 : 14}}>🗑</button>
+            </div>
+          ))}
+        </div>
+
+        <div className="row" style={{justifyContent:'space-between', marginTop:16, marginBottom:8, flexWrap:'wrap', gap:8}}>
+          <div className="row" style={{gap:8, alignItems:'center', flexWrap:'wrap'}}>
+            <label style={{fontSize:isMobile ? 12 : 13}}>Delivery</label>
+            <select
+              className="input"
+              style={{width:'auto', minWidth:isMobile ? 70 : 80, fontSize:isMobile ? 12 : 13}}
+              value={deliveryCharges}
+              onChange={(e)=>setDeliveryCharges(parseInt(e.target.value||'0',10)||0)}
+            >
+              <option value="0">Rs.0</option>
+              {deliveryOptions.sort((a,b)=>a-b).map(opt => (
+                <option key={opt} value={opt}>Rs.{opt}</option>
+              ))}
+            </select>
+            <input
+              className="input qty small"
+              type="number"
+              min="0"
+              step="1"
+              placeholder="Custom"
+              value={customDeliveryInput}
+              onChange={(e)=>setCustomDeliveryInput(e.target.value)}
+              style={{width:isMobile ? 70 : 80, fontSize:isMobile ? 12 : 13}}
+            />
+            <button
+              className="btn"
+              style={{padding:isMobile ? '6px 10px' : '6px 12px', fontSize:isMobile ? 12 : 14}}
+              onClick={()=>{
+                const val = parseInt(customDeliveryInput||'0',10)
+                if (val > 0 && !deliveryOptions.includes(val)) {
+                  const newOptions = [...deliveryOptions, val]
+                  setDeliveryOptions(newOptions)
+                  try {
+                    localStorage.setItem('deliveryChargesOptions', JSON.stringify(newOptions))
+                  } catch {}
+                }
+                if (val > 0) {
+                  setDeliveryCharges(val)
+                  setCustomDeliveryInput('')
+                }
+              }}
+            >
+              Add
+            </button>
+          </div>
+          <div style={{fontSize:isMobile ? 12 : 13}}>Rs.{deliveryAmt}</div>
+        </div>
+
+        <div className="row" style={{justifyContent:'space-between', marginBottom:16}}>
+          <div className="row" style={{gap:8, alignItems:'center'}}>
+            <label style={{fontSize:isMobile ? 12 : 13}}>Discount %</label>
+            <input className="input qty small" type="number" min="0" max="100" step="1" value={discountPct}
+              onChange={(e)=>setDiscountPct(parseInt(e.target.value||'0',10)||0)} style={{fontSize:isMobile ? 12 : 13}} />
+          </div>
+          <div style={{fontSize:isMobile ? 12 : 13}}>Rs.{discountAmount.toFixed(0)}</div>
+        </div>
+
+        <div className="order-totals" style={{fontSize:isMobile ? 12 : 13}}>
+          <div className="row"><div>Subtotal</div><div className="price">Rs.{total.toFixed(0)}</div></div>
+          {deliveryAmt > 0 && (
+            <div className="row"><div>Delivery Charges</div><div className="price">Rs.{deliveryAmt.toFixed(0)}</div></div>
+          )}
+          {discountAmount > 0 && (
+            <div className="row"><div>Discount ({discountPct}%)</div><div className="price">-Rs.{discountAmount.toFixed(0)}</div></div>
+          )}
+          <div className="row" style={{fontWeight: 'bold'}}><div>Grand Total</div><div className="price">Rs.{grandTotal.toFixed(0)}</div></div>
+        </div>
+
+        <div className="row" style={{marginTop: '10px'}}>
+          <div style={{fontSize:isMobile ? 12 : 13}}>Paid</div>
+          <input 
+            className="input" 
+            style={{width: '100%', marginLeft: '10px', fontSize:isMobile ? 13 : 14}} 
+            type="number"
+            value={paidAmount || ''}
+            onChange={(e) => setPaidAmount(e.target.value ? parseFloat(e.target.value) : 0)}
+          />
+        </div>
+
+        <div className="row" style={{justifyContent: 'space-between', marginTop: '10px'}}>
+          <div style={{fontSize:isMobile ? 12 : 13}}>Change</div>
+          <div style={{fontSize:isMobile ? 12 : 13}}>Rs. {Math.max(0, (paidAmount || 0) - grandTotal).toFixed(0)}</div>
+        </div>
+
+        <div className="order-actions" style={{marginTop: '16px'}}>
+          <div className="quick-pay-buttons" style={{display:'grid', gridTemplateColumns:isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:isMobile ? 6 : 8, width:'100%', marginBottom:8}}>
+            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 10)}>Rs.10</button>
+            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 100)}>Rs.100</button>
+            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 500)}>Rs.500</button>
+            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 1000)}>Rs.1000</button>
+          </div>
+          <button
+            className="btn"
+            style={{
+              width: '100%',
+              backgroundColor: '#ff0000',
+              color: 'white',
+              height: isMobile ? 44 : 48,
+              borderRadius: 12,
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              fontSize: isMobile ? 14 : 15
+            }}
+            onClick={handleOkDone}
+            disabled={cart.length===0}
+          >
+            <Printer size={isMobile ? 16 : 18} />
+            Print Invoice
+          </button>
+        </div>
+      </>
+    )
+  }
+
   return (
     <section className="pos-layout">
-      <div>
+      <div style={{padding: isMobile ? 0 : 0}}>
         {tokensClosed && (
-          <div className="card" style={{marginBottom:8, borderColor:'var(--danger)'}}>
+          <div className="card" style={{marginBottom:isMobile ? 8 : 12, borderColor:'var(--danger)'}}>
             <div className="row" style={{justifyContent:'space-between', alignItems:'center'}}>
-              <div className="muted">Day is <b>closed</b>. Booking and token generation are disabled.</div>
+              <div className="muted" style={{fontSize:isMobile ? 12 : 13}}>Day is <b>closed</b>. Booking and token generation are disabled.</div>
             </div>
           </div>
         )}
-        
-        <div className="card pos-header-card" style={{marginBottom:12}}>
-          <div className="row header-row" style={{marginBottom:8}}>
-            <h1 className="page-title">POS Billing</h1>
+
+        <div className="card pos-header-card" style={{marginBottom:isMobile ? 10 : 12, padding:isMobile ? 12 : 16}}>
+          <div className="row header-row" style={{marginBottom:isMobile ? 8 : 12, flexWrap:'wrap', gap:8}}>
+            <h1 className="page-title" style={{fontSize:isMobile ? 18 : 26}}>POS Billing</h1>
             <SearchBar onChange={setQuery} placeholder="Search menu items..." />
           </div>
 
           {/* Category Tabs */}
-          <div className="tabs" role="tablist" aria-label="Categories">
+          <div className="tabs" role="tablist" aria-label="Categories" style={{gap:isMobile ? 4 : 8}}>
             {tabs.map(t => (
               <button
                 key={t.id}
                 className={`tab ${activeCategory === t.id ? 'active' : ''}`}
                 onClick={() => setActiveCategory(t.id)}
+                style={{fontSize:isMobile ? 12 : 13, padding:isMobile ? '8px 12px' : '8px 16px'}}
               >
                 {t.label}
               </button>
@@ -342,7 +517,7 @@ export default function UnifiedPos() {
           </div>
         </div>
 
-        <div className="grid">
+        <div className="grid" style={{gridTemplateColumns: isMobile ? 'repeat(auto-fill, minmax(140px, 1fr))' : 'repeat(auto-fill, minmax(220px, 1fr))', gap:isMobile ? 10 : 12}}>
           {filtered.map((item) => (
             <ItemCard
               key={item.id}
@@ -354,17 +529,136 @@ export default function UnifiedPos() {
               onAdd={addToCart}
             />
           ))}
-          {filtered.length === 0 && <div className="muted">No items found.</div>}
+          {filtered.length === 0 && <div className="muted" style={{fontSize:isMobile ? 13 : 14, padding:isMobile ? 20 : 0}}>No items found.</div>}
         </div>
       </div>
 
-      <aside className="card sidebar order-card">
+      {/* Mobile floating cart button */}
+      <button
+        className="mobile-cart-toggle"
+        onClick={() => setMobileOrderOpen(true)}
+        style={{display: isMobile ? 'flex' : 'none'}}
+      >
+        <ShoppingCart size={24} />
+        {cart.length > 0 && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '-4px',
+              right: '-4px',
+              backgroundColor: 'white',
+              color: '#ff0000',
+              borderRadius: '50%',
+              width: '20px',
+              height: '20px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {cart.length}
+          </span>
+        )}
+      </button>
+
+      {/* Mobile order overlay */}
+      {mobileOrderOpen && (
+        <div
+          className="mobile-order-overlay"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            zIndex: 998,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+          }}
+          onClick={() => setMobileOrderOpen(false)}
+        >
+          <div
+            className="mobile-order-panel"
+            style={{
+              backgroundColor: '#111',
+              width: '100%',
+              maxWidth: '100%',
+              maxHeight: '90vh',
+              borderRadius: '16px 16px 0 0',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                padding: isMobile ? 12 : 16,
+                borderBottom: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div className="card-title" style={{fontSize:isMobile ? 16 : 18}}>Current Order</div>
+              <button
+                onClick={() => setMobileOrderOpen(false)}
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  backgroundColor: '#333',
+                  color: 'white',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div style={{ overflowY: 'auto', flex: 1, padding: isMobile ? 12 : 16 }}>
+              <MobileOrderContent
+                cart={cart}
+                tokenNumber={tokenNumber}
+                orderType={orderType}
+                setOrderType={setOrderType}
+                customerName={customerName}
+                setCustomerName={setCustomerName}
+                deliveryCharges={deliveryCharges}
+                setDeliveryCharges={setDeliveryCharges}
+                deliveryOptions={deliveryOptions}
+                setDeliveryOptions={setDeliveryOptions}
+                customDeliveryInput={customDeliveryInput}
+                setCustomDeliveryInput={setCustomDeliveryInput}
+                discountPct={discountPct}
+                setDiscountPct={setDiscountPct}
+                paidAmount={paidAmount}
+                setPaidAmount={setPaidAmount}
+                total={total}
+                deliveryAmt={deliveryAmt}
+                discountAmount={discountAmount}
+                grandTotal={grandTotal}
+                changeQty={changeQty}
+                removeRow={removeRow}
+                tokensClosed={tokensClosed}
+                handleOkDone={handleOkDone}
+                isMobile={isMobile}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop sidebar - hidden on mobile */}
+      <aside className="card sidebar order-card" style={{display: isMobile ? 'none' : 'flex'}}>
         <div className="order-card-head">
           <div className="card-title">Current Order</div>
           <div className="muted">Token {tokenNumber || '-'} </div>
         </div>
-
-        
 
         <div className="segmented">
           <button className={`seg-btn ${orderType==='dine-in'?'active':''}`} onClick={()=>setOrderType('dine-in')}>Dine-in</button>
@@ -376,8 +670,6 @@ export default function UnifiedPos() {
           <label className="muted">Customer Name</label>
           <input className="input" placeholder="Customer Name" value={customerName} onChange={(e)=>setCustomerName(e.target.value)} />
         </div>
-
-        
 
         <div className="order-list">
           <div className="bill-head">
@@ -482,8 +774,6 @@ export default function UnifiedPos() {
           />
         </div>
 
-        
-
         <div className="row" style={{justifyContent: 'space-between', marginTop: '10px'}}>
           <div>Change</div>
           <div>Rs. {Math.max(0, (paidAmount || 0) - grandTotal).toFixed(0)}</div>
@@ -533,7 +823,7 @@ export default function UnifiedPos() {
           alignItems: 'center',
           justifyContent: 'center',
           padding: '20px',
-          boxSizing: 'border-box'
+          boxSizing: 'borderBox'
         }} onClick={handleReceiptOK}>
           
           <div style={{
@@ -541,7 +831,7 @@ export default function UnifiedPos() {
             borderRadius: '12px',
             padding: '25px',
             width: '100%',
-            maxWidth: '450px',
+            maxWidth: isMobile ? '100%' : '450px',
             maxHeight: '90vh',
             overflow: 'hidden',
             boxShadow: '0 10px 40px rgba(0,0,0,0.3)',

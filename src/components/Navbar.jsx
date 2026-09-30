@@ -4,7 +4,7 @@ import { getRestaurantInfo } from '../utils/storage.js'
 import { getCurrentUser } from '../utils/storage.js'
 import { LayoutDashboard, UtensilsCrossed, Sandwich, Martini, Salad, BookOpen, Users as UsersIcon, Settings as SettingsIcon, History as HistoryIcon, RotateCcw, ReceiptText } from 'lucide-react'
 
-export default function Navbar() {
+export default function Navbar({ closeMobileMenu }) {
   const [brand, setBrand] = useState(() => (getRestaurantInfo().name || 'Restaurant Manager'))
   const [isCashier, setIsCashier] = useState(() => {
     try { return String(getCurrentUser()?.role||'').toLowerCase() === 'cashier' } catch { return false }
@@ -19,6 +19,10 @@ export default function Navbar() {
   const dayMenuRef = useRef(null)
   const dayBtnRef = useRef(null)
   const nav = useNavigate()
+
+  const handleNavClick = () => {
+    if (closeMobileMenu) closeMobileMenu()
+  }
 
   useEffect(() => {
     const update = () => setBrand(getRestaurantInfo().name || 'Restaurant Manager')
@@ -134,52 +138,52 @@ export default function Navbar() {
         {isCashier ? (
           // Cashier-only navigation
           <>
-            <NavLink to="/pos" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/pos" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><UtensilsCrossed size={16}/> <span>Menu</span></span>
             </NavLink>
-            <NavLink to="/recent-sales" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/recent-sales" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><ReceiptText size={16}/> <span>Recent Sales</span></span>
             </NavLink>
           </>
         ) : (
           // Admin/Manager navigation
           <>
-            <NavLink to="/" end className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/" end className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><LayoutDashboard size={16}/> <span>Dashboard</span></span>
             </NavLink>
-            <NavLink to="/pos" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/pos" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><UtensilsCrossed size={16}/> <span>Menu</span></span>
             </NavLink>
-            <NavLink to="/add-items" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/add-items" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><Sandwich size={16}/> <span>Add Items</span></span>
             </NavLink>
-            <NavLink to="/recipes" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/recipes" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><BookOpen size={16}/> <span>Recipes</span></span>
             </NavLink>
-            <NavLink to="/users" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/users" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><UsersIcon size={16}/> <span>Users</span></span>
             </NavLink>
-            <NavLink to="/settings" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/settings" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><SettingsIcon size={16}/> <span>Settings</span></span>
             </NavLink>
-            <NavLink to="/sales" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/sales" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><ReceiptText size={16}/> <span>Sale History</span></span>
             </NavLink>
-            <NavLink to="/returns" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/returns" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><RotateCcw size={16}/> <span>Refund Order</span></span>
             </NavLink>
-            <NavLink to="/return-history" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/return-history" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><HistoryIcon size={16}/> <span>Refund History</span></span>
             </NavLink>
-            <NavLink to="/consumption" className={({isActive}) => (isActive ? 'active' : '')}>
+            <NavLink to="/consumption" className={({isActive}) => (isActive ? 'active' : '')} onClick={handleNavClick}>
               <span className="flex items-center gap-2"><Salad size={16}/> <span>Consumption</span></span>
             </NavLink>
             <div>
               <button ref={dayBtnRef} type="button" className="btn" onClick={()=>{ setDayMenuOpen(v=>{ const next = !v; if (!v && next) positionDayMenu(); return next }) }} title="Day options">Day ▾</button>
               {dayMenuOpen && (
                 <div ref={dayMenuRef} className="card" style={{position:'fixed', top:dayMenuPos.top, left:dayMenuPos.left, width:dayMenuPos.width, maxWidth:'92vw', padding:8, zIndex:1200}}>
-                  <button className="btn" style={{width:'100%', justifyContent:'flex-start'}} onClick={()=>{ setDayMenuOpen(false); nav('/day-open') }}>Day Open</button>
-                  <button className="btn" style={{width:'100%', justifyContent:'flex-start', marginTop:6}} onClick={()=>{ setDayMenuOpen(false); nav('/day-close') }}>Day Close</button>
+                  <button className="btn" style={{width:'100%', justifyContent:'flex-start'}} onClick={()=>{ setDayMenuOpen(false); handleNavClick(); nav('/day-open') }}>Day Open</button>
+                  <button className="btn" style={{width:'100%', justifyContent:'flex-start', marginTop:6}} onClick={()=>{ setDayMenuOpen(false); handleNavClick(); nav('/day-close') }}>Day Close</button>
                 </div>
               )}
             </div>

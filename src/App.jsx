@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getCurrentUser, isTokenClosed, getDayOpenAt, openDay, getActiveBusinessDateId, getBusinessDateId } from './utils/storage.js'
+import { Menu } from 'lucide-react'
 import Navbar from './components/Navbar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import UnifiedPos from './pages/UnifiedPos.jsx'
@@ -20,6 +21,8 @@ import BusinessDateBadge from './components/BusinessDateBadge.jsx'
 import RecentSales from './pages/RecentSales.jsx'
 
 export default function App() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   useEffect(()=>{
     try {
       const nowBiz = getBusinessDateId(Date.now())
@@ -30,6 +33,14 @@ export default function App() {
       if (needsOpen) openDay()
     } catch {}
   },[])
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(prev => !prev)
+  }
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+  }
   const RequireAuth = ({ children }) => {
     const user = getCurrentUser()
     if (!user) return <Navigate to="/login" />
@@ -90,8 +101,23 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <aside className="shell-sidebar">
-        <Navbar />
+      {/* Mobile menu overlay */}
+      <div 
+        className={`mobile-menu-overlay ${mobileMenuOpen ? 'active' : ''}`}
+        onClick={closeMobileMenu}
+      />
+
+      {/* Mobile menu toggle button */}
+      <button 
+        className="mobile-menu-toggle"
+        onClick={toggleMobileMenu}
+        aria-label="Toggle menu"
+      >
+        <Menu size={20} />
+      </button>
+
+      <aside className={`shell-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+        <Navbar closeMobileMenu={closeMobileMenu} />
       </aside>
       <div className="shell-main">
         <header className="shell-header">
