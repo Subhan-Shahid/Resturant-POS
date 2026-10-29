@@ -19,6 +19,7 @@ import DayClose from './pages/DayClose.jsx'
 import DayOpen from './pages/DayOpen.jsx'
 import BusinessDateBadge from './components/BusinessDateBadge.jsx'
 import RecentSales from './pages/RecentSales.jsx'
+import ThemeToggle from './components/ThemeToggle.jsx'
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -92,6 +93,9 @@ export default function App() {
   if (!showShell) {
     return (
       <div className="app">
+        <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
+          <ThemeToggle />
+        </div>
         <main className="container full">
           {routes}
         </main>
@@ -121,7 +125,8 @@ export default function App() {
       </aside>
       <div className="shell-main">
         <header className="shell-header">
-          <div className="shell-header-right" style={{display:'flex', justifyContent:'flex-end', width:'100%'}}>
+          <div className="shell-header-right" style={{display:'flex', justifyContent:'flex-end', alignItems:'center', gap: 10, width:'100%'}}>
+            <ThemeToggle />
             <BusinessDateBadge />
           </div>
         </header>

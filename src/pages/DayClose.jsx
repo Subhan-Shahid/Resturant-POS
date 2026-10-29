@@ -395,23 +395,25 @@ function reprint(rec, currentBizId){
       </div>
 
       {/* Today's sales table with Reprint */}
-      <div className="card" style={{marginTop:12}}>
-        <div className="card-title">Today Sales (Business Date: {bizId || '-'})</div>
-        <div className="bill-head" style={{gridTemplateColumns:'160px 80px 1fr 120px 120px'}}>
+      <div className="card" style={{marginTop:12, padding:0, overflow:'hidden'}}>
+        <div style={{padding:'12px 16px'}}><div className="card-title">Today Sales (Business Date: {bizId || '-'})</div></div>
+        <div className="table-scroll-wrap">
+        <div className="bill-head" style={{gridTemplateColumns:'140px 70px 1fr 110px 110px'}}>
           <div>Date</div><div>Token</div><div>Customer</div><div>Total</div><div>Actions</div>
         </div>
-        {daySales.length===0 && <div className="muted">No sales for current business day.</div>}
+        {daySales.length===0 && <div className="muted" style={{padding:'12px 16px'}}>No sales for current business day.</div>}
         {daySales.map(s => (
-          <div key={s.id} className="bill-row" style={{gridTemplateColumns:'160px 80px 1fr 120px 120px'}}>
+          <div key={s.id} className="bill-row" style={{gridTemplateColumns:'140px 70px 1fr 110px 110px'}}>
             <div>{s?.bizId || getBusinessDateId(s.createdAt||0)}</div>
             <div>{s.token||'-'}</div>
             <div className="grow">{s.customerName||'-'}</div>
             <div className="price">Rs.{Number(s.total||0).toFixed(2)}</div>
             <div className="row" style={{justifyContent:'flex-start'}}>
-              <button className="btn" onClick={()=>reprintLocal(s, bizId)}>Reprint</button>
+              <button className="btn" style={{fontSize:12, padding:'6px 10px'}} onClick={()=>reprintLocal(s, bizId)}>Reprint</button>
             </div>
           </div>
         ))}
+        </div>
       </div>
 
       {/* Date-wise sales summary table (all days) */}
@@ -1039,16 +1041,17 @@ function DateWiseSalesTable({ sales, returns }){
   }, [rows, selectedDate])
 
   return (
-    <div className="card" style={{marginTop:12}}>
-      <div className="row" style={{justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:8}}>
+    <div className="card" style={{marginTop:12, padding:0, overflow:'hidden'}}>
+      <div style={{padding:'12px 16px'}} className="row">
         <div className="card-title">Sales Summary (All Days)</div>
-        <div className="row" style={{gap:8, alignItems:'center'}}>
+        <div className="row" style={{gap:8, alignItems:'center', marginLeft:'auto'}}>
           <label className="muted">Date</label>
           <input className="input" type="date" value={selectedDate} onChange={e=>setSelectedDate(e.target.value)} />
           <button type="button" className="btn" onClick={()=>setSelectedDate('')}>Clear</button>
         </div>
       </div>
-      <div className="bill-head" style={{gridTemplateColumns:'140px 100px 100px 140px 140px 140px 160px'}}>
+      <div className="table-scroll-wrap">
+      <div className="bill-head" style={{gridTemplateColumns:'130px 80px 80px 130px 120px 120px 140px'}}>
         <div>Date</div>
         <div>Sales</div>
         <div>Returns</div>
@@ -1057,9 +1060,9 @@ function DateWiseSalesTable({ sales, returns }){
         <div>Returned</div>
         <div>Net</div>
       </div>
-      {filteredRows.length===0 && <div className="muted">No sales recorded yet.</div>}
+      {filteredRows.length===0 && <div className="muted" style={{padding:'12px 16px'}}>No sales recorded yet.</div>}
       {filteredRows.map((r)=> (
-        <div key={r.date} className="bill-row" style={{gridTemplateColumns:'140px 100px 100px 140px 140px 140px 160px'}}>
+        <div key={r.date} className="bill-row" style={{gridTemplateColumns:'130px 80px 80px 130px 120px 120px 140px'}}>
           <div>{r.date}</div>
           <div>{r.salesCount}</div>
           <div>{r.returnsCount}</div>
@@ -1069,6 +1072,7 @@ function DateWiseSalesTable({ sales, returns }){
           <div className="price">Rs.{r.net.toFixed(2)}</div>
         </div>
       ))}
+      </div>
     </div>
   )
 }

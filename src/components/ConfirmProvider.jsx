@@ -67,7 +67,7 @@ export function ConfirmProvider({ children }){
                   <button
                     className="btn primary"
                     onClick={(e) => {
-                      const input = e.currentTarget.closest('.card')?.querySelector('input')
+                      const input = e.currentTarget.closest('.modal')?.querySelector('input') || e.currentTarget.closest('.card')?.querySelector('input')
                       onClose(input ? input.value : '')
                     }}
                   >{confirmText || 'OK'}</button>

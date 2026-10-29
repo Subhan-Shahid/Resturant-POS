@@ -551,18 +551,19 @@ export default function Recipes(){
             <div className="muted" style={{marginBottom:8}}>
               {selectedItem?.name || 'Item'} sold: <b>{selectedSoldQty}</b>
             </div>
-            <div className="bill-head" style={{gridTemplateColumns:'1fr 120px 120px 120px 100px'}}>
+            <div className="table-scroll-wrap" style={{borderRadius:8, border:'1px solid var(--border)'}}>
+            <div className="bill-head" style={{gridTemplateColumns:'1fr 110px 110px 110px 90px'}}>
               <div>Ingredient</div>
               <div>Unit</div>
               <div>Per Item Qty</div>
               <div>Total Used</div>
               <div>Actions</div>
             </div>
-            {ingredients.length===0 && <div className="muted">No ingredients yet.</div>}
+            {ingredients.length===0 && <div className="muted" style={{padding:'10px 16px'}}>No ingredients yet.</div>}
 
             {/* Read-only view */}
             {!editing && ingredients.map((row, idx) => (
-              <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 120px 120px 120px 100px'}}>
+              <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 110px 110px 110px 90px'}}>
                 <div className="grow">{row.name}</div>
                 <div>{row.unit||'-'}</div>
                 <div>{Number(row.qty||0).toFixed(2)}</div>
@@ -573,14 +574,15 @@ export default function Recipes(){
 
             {/* Edit form */}
             {editing && ingredients.map((row, idx) => (
-              <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 120px 120px 120px 100px'}}>
+              <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 110px 110px 110px 90px'}}>
                 <input className="input" placeholder="e.g., Bun" value={row.name} onChange={(e)=>onChangeRow(idx,'name',e.target.value)} />
                 <input className="input" placeholder="e.g., pcs / g / kg" value={row.unit||''} onChange={(e)=>onChangeRow(idx,'unit',e.target.value)} />
                 <input className="input" type="number" step="0.01" min="0" value={row.qty} onChange={(e)=>onChangeRow(idx,'qty',e.target.value)} />
                 <div>{Number((parseFloat(row.qty)||0) * selectedSoldQty).toFixed(2)}</div>
-                <button className="btn danger" onClick={()=>onDeleteRow(idx)}>Remove</button>
+                <button className="btn danger" style={{fontSize:12, padding:'4px 8px'}} onClick={()=>onDeleteRow(idx)}>Remove</button>
               </div>
             ))}
+            </div>
 
             <div className="actions">
               {!editing && (
@@ -635,23 +637,25 @@ export default function Recipes(){
       </div>
 
       {/* Bottom table: aggregated ingredients usage for selected date */}
-      <div className="card" style={{marginTop:16}}>
-        <div className="card-title">Ingredients Used on {dateOnly || '—'} ({dayIngredientUsage.length})</div>
-        <div className="bill-head" style={{gridTemplateColumns:'1fr 160px 160px'}}>
+      <div className="card" style={{marginTop:16, padding:0, overflow:'hidden'}}>
+        <div style={{padding:'12px 16px'}}><div className="card-title">Ingredients Used on {dateOnly || '—'} ({dayIngredientUsage.length})</div></div>
+        <div className="table-scroll-wrap">
+        <div className="bill-head" style={{gridTemplateColumns:'1fr 140px 130px'}}>
           <div>Ingredient</div>
           <div>Unit</div>
           <div>Total Used</div>
         </div>
         {(!dateOnly || dayIngredientUsage.length===0) && (
-          <div className="muted">{dateOnly ? 'No ingredients used on this date.' : 'Select a date to view usage.'}</div>
+          <div className="muted" style={{padding:'10px 16px'}}>{dateOnly ? 'No ingredients used on this date.' : 'Select a date to view usage.'}</div>
         )}
         {dayIngredientUsage.map((row, idx) => (
-          <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 160px 160px'}}>
+          <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 140px 130px'}}>
             <div className="grow">{row.name}</div>
             <div>{row.unit || '-'}</div>
             <div>{Number(row.total||0).toFixed(2)}</div>
           </div>
         ))}
+        </div>
       </div>
 
       {/* Dialog for item details usage */}
@@ -671,21 +675,23 @@ export default function Recipes(){
                 <>
                   <div className="card-title">{item?.name || 'Item'} Usage Details</div>
                   <div className="muted" style={{marginBottom:8}}>Sold: <b>{Number(factor)}</b></div>
-                  <div className="bill-head" style={{gridTemplateColumns:'1fr 140px 140px 140px'}}>
+                  <div className="table-scroll-wrap">
+                  <div className="bill-head" style={{gridTemplateColumns:'1fr 120px 120px 120px'}}>
                     <div>Ingredient</div>
                     <div>Unit</div>
                     <div>Per Item Qty</div>
                     <div>Total Used</div>
                   </div>
-                  {(!rec || rec.length===0) && <div className="muted">No recipe added yet for this item.</div>}
+                  {(!rec || rec.length===0) && <div className="muted" style={{padding:'8px 0'}}>No recipe added yet for this item.</div>}
                   {(rec||[]).map((ing, idx) => (
-                    <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 140px 140px 140px'}}>
+                    <div key={idx} className="bill-row" style={{gridTemplateColumns:'1fr 120px 120px 120px'}}>
                       <div className="grow">{ing.name}</div>
                       <div>{ing.unit||'-'}</div>
                       <div>{Number(ing.qty||0).toFixed(2)}</div>
                       <div>{Number((parseFloat(ing.qty)||0) * (parseFloat(factor)||0)).toFixed(2)}</div>
                     </div>
                   ))}
+                  </div>
                   <div className="actions" style={{justifyContent:'flex-end'}}>
                     <button className="btn" onClick={()=>setDialogItemId('')}>Close</button>
                   </div>

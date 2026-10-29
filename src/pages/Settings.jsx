@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDialog } from '../components/ConfirmProvider.jsx'
+import ThemeToggle from '../components/ThemeToggle.jsx'
 import { getRestaurantInfo, setRestaurantInfo, exportUsers, importUsers, exportAllData, importAllData, wipeAllData, isTokenClosed, closeTokens, openTokens, StorageKeys, ensureTokenDay, getBusinessHours, setBusinessHours, getPrinterConfig, setPrinterConfig, setActiveBusinessDateId, getActiveBusinessDateId, forceSetBusinessDateId } from '../utils/storage.js'
 
 export default function Settings() {
@@ -435,13 +436,13 @@ SILENT DEFAULT TEST\n===================\n1234567890\nABCDEFGHIJKLMNOPQRSTUVWXYZ
             )}
           </div>
 
-          <div className="actions">
+          <div className="actions" style={{flexWrap:'wrap', gap:8}}>
             <button className="btn" onClick={loadPrinters} disabled={loadingPrinters}>Refresh Printers</button>
-            <button className="btn primary" onClick={handlePrinterSave}>Save Printer Settings</button>
-            <button className="btn" onClick={handlePrinterTest}>Test Print (Dialog)</button>
+            <button className="btn primary" onClick={handlePrinterSave}>Save Printer</button>
+            <button className="btn" onClick={handlePrinterTest}>Test (Dialog)</button>
             <button className="btn" onClick={handlePrinterTestSilent}>Test Silent</button>
-            <button className="btn" onClick={handlePrinterTestSilentPlain}>Test Silent (Plain)</button>
-            <button className="btn" onClick={handlePrinterTestSilentDefault}>Test Silent (Default)</button>
+            <button className="btn" onClick={handlePrinterTestSilentPlain}>Test Plain</button>
+            <button className="btn" onClick={handlePrinterTestSilentDefault}>Test Default</button>
           </div>
 
           {printerConfig.printerName && (
@@ -452,8 +453,22 @@ SILENT DEFAULT TEST\n===================\n1234567890\nABCDEFGHIJKLMNOPQRSTUVWXYZ
         </div>
 
         <div className="card">
+          <div className="card-title">Appearance & Theme</div>
+          <div className="muted" style={{ marginBottom: 12 }}>
+            Customize the look and feel of your restaurant POS system. Choose between a sleek Dark mode or an ultra-crisp Light mode.
+          </div>
+          <div className="row" style={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div>
+              <div style={{ fontWeight: 600 }}>Theme Mode</div>
+              <div className="muted" style={{ fontSize: 12 }}>Select your preferred interface brightness</div>
+            </div>
+            <ThemeToggle variant="segmented" />
+          </div>
+        </div>
+
+        <div className="card">
           <div className="card-title">Data Management</div>
-          <div className="row" style={{ gap: 8 }}>
+          <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
             <button className="btn" onClick={doExport}>Export Users</button>
             <label className="btn">
               Import Users

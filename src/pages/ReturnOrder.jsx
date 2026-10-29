@@ -198,9 +198,9 @@ export default function ReturnOrder(){
     <>
     <section>
       <h1>Refund Order</h1>
-      <div className="row" style={{marginBottom:12, justifyContent:'space-between'}}>
+      <div className="row" style={{marginBottom:12, justifyContent:'space-between', flexWrap:'wrap', gap:8}}>
         <div>
-          <div className="row" style={{gap:8, alignItems:'center'}}>
+          <div className="row" style={{gap:8, alignItems:'center', flexWrap:'wrap'}}>
             {(() => {
               const ref = useRef(null)
               return (
@@ -218,32 +218,34 @@ export default function ReturnOrder(){
             {date && <button className="btn" onClick={()=>setDate('')}>Clear</button>}
           </div>
         </div>
-        <div className="row" style={{gap:8}}>
-          <input className="input" placeholder="Search by token, name, phone..." value={q} onChange={(e)=>setQ(e.target.value)} />
+        <div className="row" style={{gap:8, flexWrap:'wrap'}}>
+          <input className="input" placeholder="Search by token, name, phone..." value={q} onChange={(e)=>setQ(e.target.value)} style={{minWidth:180, flex:'1 1 180px'}} />
           <div className="muted" style={{whiteSpace:'nowrap'}}>Count: <b>{filtered.length}</b></div>
         </div>
       </div>
-      <div className="card">
-        <div className="bill-head" style={{gridTemplateColumns:'140px 80px 1fr 100px 240px'}}>
-          <div>Date</div>
-          <div>Token</div>
-          <div>Customer</div>
-          <div>Total</div>
-          <div>Actions</div>
-        </div>
-        {filtered.length===0 && <div className="muted">No sales found.</div>}
-        {filtered.map(rec => (
-          <div key={rec.id} className="bill-row" style={{gridTemplateColumns:'140px 80px 1fr 100px 240px'}}>
-            <div>{rec?.bizId || getBusinessDateId(rec.createdAt||Date.now())}</div>
-            <div>{rec.token||'-'}</div>
-            <div className="grow">{rec.customerName||'-'}</div>
-            <div className="price">Rs.{Number(rec.total||0).toFixed(2)}</div>
-            <div className="row" style={{justifyContent:'flex-start'}}>
-              <button className="btn" style={{background:'#ff0000', borderColor:'#ff0000', color:'#fff'}} onClick={()=>reprint(rec)}>Reprint</button>
-              <button className="btn danger" disabled={alreadyReturned(rec.id)} onClick={()=>doReturn(rec)}>{alreadyReturned(rec.id)?'Refunded':'Refund'}</button>
-            </div>
+      <div className="card" style={{padding:0, overflow:'hidden'}}>
+        <div className="table-scroll-wrap">
+          <div className="bill-head" style={{gridTemplateColumns:'130px 70px 1fr 90px 220px'}}>
+            <div>Date</div>
+            <div>Token</div>
+            <div>Customer</div>
+            <div>Total</div>
+            <div>Actions</div>
           </div>
-        ))}
+          {filtered.length===0 && <div className="muted" style={{padding:'12px 14px'}}>No sales found.</div>}
+          {filtered.map(rec => (
+            <div key={rec.id} className="bill-row" style={{gridTemplateColumns:'130px 70px 1fr 90px 220px'}}>
+              <div>{rec?.bizId || getBusinessDateId(rec.createdAt||Date.now())}</div>
+              <div>{rec.token||'-'}</div>
+              <div className="grow">{rec.customerName||'-'}</div>
+              <div className="price">Rs.{Number(rec.total||0).toFixed(2)}</div>
+              <div className="row" style={{justifyContent:'flex-start', gap:6, flexWrap:'wrap'}}>
+                <button className="btn" style={{background:'#ff0000', borderColor:'#ff0000', color:'#fff', fontSize:12, padding:'6px 10px'}} onClick={()=>reprint(rec)}>Reprint</button>
+                <button className="btn danger" style={{fontSize:12, padding:'6px 10px'}} disabled={alreadyReturned(rec.id)} onClick={()=>doReturn(rec)}>{alreadyReturned(rec.id)?'Refunded':'Refund'}</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
       {receiptOpen && (

@@ -8,6 +8,10 @@ import { listUsers, addUser } from './utils/storage.js'
 import { ensureTokenDay, openTokens } from './utils/storage.js'
 import { logout } from './utils/storage.js'
 import { ConfirmProvider } from './components/ConfirmProvider.jsx'
+import { initTheme } from './utils/theme.js'
+
+// Initialize color theme before rendering
+try { initTheme() } catch {}
 
 // One-time initialization: seed a default admin if no users exist
 try {

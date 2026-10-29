@@ -510,10 +510,10 @@ export default function SaleHistory(){
     <section>
       <h1>Sale History</h1>
 
-      <div className="row" style={{gap:8, alignItems:'center', marginBottom:8}}>
-        <div className="row" style={{gap:8, alignItems:'center'}}>
+      <div className="row" style={{gap:8, alignItems:'center', marginBottom:8, flexWrap:'wrap'}}>
+        <div className="row" style={{gap:8, alignItems:'center', flexWrap:'wrap'}}>
           <label className="muted">Date</label>
-          <div className="input-wrap">
+          <div className="input-wrap" style={{minWidth:160, flex:'1 1 160px', maxWidth:220}}>
             <input
               ref={dateRef}
               className="input"
@@ -531,10 +531,9 @@ export default function SaleHistory(){
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             </button>
           </div>
-          {/* Date badge removed per request */}
           {date && <button className="btn" onClick={()=>setDate('')}>Clear</button>}
         </div>
-        <div className="row" style={{gap:8, alignItems:'center'}}>
+        <div className="row" style={{gap:8, alignItems:'center', flexWrap:'wrap'}}>
           <div className="muted">Count: <b>{filteredSales.length}</b></div>
           <button className="btn" onClick={downloadPdfForDate} title="Download PDF report for selected date">Download PDF</button>
         </div>
@@ -641,31 +640,33 @@ export default function SaleHistory(){
         </div>
       </div>
 
-      <div className="card">
-        <div className="bill-head" style={{gridTemplateColumns:'140px 80px 1fr 2fr 120px 100px 160px'}}>
-          <div>Date</div>
-          <div>Token</div>
-          <div>Customer</div>
-          <div>Items</div>
-          <div>Order Type</div>
-          <div>Total</div>
-          <div>Actions</div>
-        </div>
-        {filteredSales.length===0 && <div className="muted">No sales yet.</div>}
-        {pagedSales.map(rec => (
-          <div key={rec.id} className="bill-row" style={{gridTemplateColumns:'140px 80px 1fr 2fr 120px 100px 160px'}}>
-            <div>{rec?.bizId || getBusinessDateId(rec.createdAt||Date.now())}</div>
-            <div>{rec.token||'-'}</div>
-            <div className="grow">{rec.customerName||'-'}</div>
-            <div>{(rec.items||[]).map(i=>`${i.qty} x ${i.name}`).join(', ') || '-'}</div>
-            <div>{rec.orderType || '-'}</div>
-            <div className="price">Rs.{Number(rec.total||0).toFixed(2)}</div>
-            <div className="row" style={{justifyContent:'flex-start', gap:8}}>
-              <button className="btn" style={{background:'#ff0000', borderColor:'#ff0000', color:'#fff'}} onClick={()=>reprint(rec)}>Reprint</button>
-              <button className="btn danger" onClick={()=>onDelete(rec.id)}>Delete</button>
-            </div>
+      <div className="card" style={{padding:0, overflow:'hidden'}}>
+        <div className="table-scroll-wrap">
+          <div className="bill-head" style={{gridTemplateColumns:'130px 70px 1fr 2fr 110px 90px 160px'}}>
+            <div>Date</div>
+            <div>Token</div>
+            <div>Customer</div>
+            <div>Items</div>
+            <div>Order Type</div>
+            <div>Total</div>
+            <div>Actions</div>
           </div>
-        ))}
+          {filteredSales.length===0 && <div className="muted" style={{padding:'12px 14px'}}>No sales yet.</div>}
+          {pagedSales.map(rec => (
+            <div key={rec.id} className="bill-row" style={{gridTemplateColumns:'130px 70px 1fr 2fr 110px 90px 160px'}}>
+              <div>{rec?.bizId || getBusinessDateId(rec.createdAt||Date.now())}</div>
+              <div>{rec.token||'-'}</div>
+              <div className="grow">{rec.customerName||'-'}</div>
+              <div style={{wordBreak:'break-word'}}>{(rec.items||[]).map(i=>`${i.qty} x ${i.name}`).join(', ') || '-'}</div>
+              <div>{rec.orderType || '-'}</div>
+              <div className="price">Rs.{Number(rec.total||0).toFixed(2)}</div>
+              <div className="row" style={{justifyContent:'flex-start', gap:6, flexWrap:'wrap'}}>
+                <button className="btn" style={{background:'#ff0000', borderColor:'#ff0000', color:'#fff', fontSize:12, padding:'6px 10px'}} onClick={()=>reprint(rec)}>Reprint</button>
+                <button className="btn danger" style={{fontSize:12, padding:'6px 10px'}} onClick={()=>onDelete(rec.id)}>Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Bottom pagination duplicate for convenience */}
@@ -680,15 +681,15 @@ export default function SaleHistory(){
         </div>
       )}
       <div className="card" style={{marginTop:12}}>
-        <div className="row" style={{justifyContent:'space-between'}}>
+        <div className="row" style={{justifyContent:'space-between', flexWrap:'wrap', gap:8}}>
           <div>Sales Total</div>
           <div className="price">Rs.{totals.saleTotal.toFixed(2)}</div>
         </div>
-        <div className="row" style={{justifyContent:'space-between'}}>
+        <div className="row" style={{justifyContent:'space-between', flexWrap:'wrap', gap:8}}>
           <div>Returns Total</div>
           <div className="price">Rs.{totals.returnTotal.toFixed(2)}</div>
         </div>
-        <div className="row" style={{justifyContent:'space-between'}}>
+        <div className="row" style={{justifyContent:'space-between', flexWrap:'wrap', gap:8}}>
           <div className="big">Net Total</div>
           <div className="big price">Rs.{totals.net.toFixed(2)}</div>
         </div>

@@ -277,24 +277,26 @@ export default function Consumption(){
           <button className="btn" onClick={downloadPdf} title="Download consumption report as PDF">Download PDF</button>
         </div>
       </div>
-      <div className="card">
-        <div className="bill-head" style={{gridTemplateColumns:'1fr 120px 140px'}}>
-          <div>Item</div>
-          <div>Qty Sold</div>
-          <div>Total Rs.</div>
-        </div>
-        {rows.length===0 && <div className="muted">No sales yet.</div>}
-        {rows.map(r => (
-          <div key={r.name} className="bill-row" style={{gridTemplateColumns:'1fr 120px 140px'}}>
-            <div className="grow">{r.name}</div>
-            <div>{r.qty}</div>
-            <div className="price">Rs.{r.total.toFixed(2)}</div>
+      <div className="card" style={{padding:0, overflow:'hidden'}}>
+        <div className="table-scroll-wrap">
+          <div className="bill-head" style={{gridTemplateColumns:'1fr 110px 130px'}}>
+            <div>Item</div>
+            <div>Qty Sold</div>
+            <div>Total Rs.</div>
           </div>
-        ))}
-        <div className="bill-foot" style={{gridTemplateColumns:'1fr 120px 140px'}}>
-          <div className="big">Total</div>
-          <div className="big">{totals.qty}</div>
-          <div className="big price">Rs.{totals.total.toFixed(2)}</div>
+          {rows.length===0 && <div className="muted" style={{padding:'12px 14px'}}>No sales yet.</div>}
+          {rows.map(r => (
+            <div key={r.name} className="bill-row" style={{gridTemplateColumns:'1fr 110px 130px'}}>
+              <div className="grow">{r.name}</div>
+              <div>{r.qty}</div>
+              <div className="price">Rs.{r.total.toFixed(2)}</div>
+            </div>
+          ))}
+          <div className="bill-foot" style={{gridTemplateColumns:'1fr 110px 130px'}}>
+            <div className="big">Total</div>
+            <div className="big">{totals.qty}</div>
+            <div className="big price">Rs.{totals.total.toFixed(2)}</div>
+          </div>
         </div>
       </div>
 

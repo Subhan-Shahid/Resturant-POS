@@ -143,350 +143,345 @@ export default function Dashboard() {
 
   return (
     <section className="page dashboard-page">
-      <div className="dashboard-header" style={{marginBottom: isMobile ? 12 : 20}}>
-        <div>
-          <h1 className="page-title dashboard-title" style={{display:'flex', alignItems:'center', gap:isMobile ? 8 : 12, marginBottom:4, fontSize: isMobile ? 18 : 26}}>
-            <LayoutDashboard size={isMobile ? 22 : 28} />
+      {/* Dashboard Header */}
+      <div className="dashboard-header">
+        <div className="dashboard-header-title">
+          <h1 className="dashboard-title">
+            <LayoutDashboard size={24} style={{ color: 'var(--primary)' }} />
             <span>Dashboard Overview</span>
           </h1>
-          <p className="dashboard-subtitle" style={{fontSize: isMobile ? 11 : 13}}>Monitor your restaurant's performance and sales metrics in real-time.</p>
+          <p className="dashboard-subtitle">Monitor your restaurant's performance and sales metrics in real-time.</p>
         </div>
-        <div style={{display:'flex', alignItems:'center', gap:isMobile ? 8 : 12, flexWrap:'wrap'}}>
-           <button
+        <div className="dashboard-header-actions">
+          <button
+            type="button"
             className="btn icon-btn"
             onClick={() => window.location.reload()}
             title="Refresh dashboard data"
-            style={{background:'rgba(255,255,255,0.05)', border:'1px solid var(--border)', padding:isMobile ? 8 : 12}}
-           >
-            <RotateCcw size={isMobile ? 16 : 18} />
+            style={{ borderRadius: 10, height: 38, width: 38 }}
+          >
+            <RotateCcw size={16} />
           </button>
-           <div className="muted" style={{fontSize:isMobile ? 11 : 13, background:'rgba(255,255,255,0.05)', padding:isMobile ? '6px 10px' : '6px 12px', borderRadius:8, border:'1px solid var(--border)'}}>
-            <span style={{display:isMobile ? 'none' : 'inline'}}>Business Date: </span><b style={{color:'var(--primary)'}}>{getActiveBusinessDateId()}</b>
+          <div className="biz-date-badge">
+            <span>Business Date:</span>
+            <b>{getActiveBusinessDateId()}</b>
           </div>
         </div>
       </div>
 
-      <div className="grid" style={{gridTemplateColumns: '1fr', gap: isMobile ? 12 : 20}}>
-        {/* Filter Section */}
-        <Card className="dashboard-filter-card" style={{background: 'var(--panel)', border: '1px solid var(--border)'}}>
-          <CardContent className="p-4" style={{paddingBottom: isMobile ? 12 : 16}}>
-            <div className="row" style={{justifyContent:'space-between', flexWrap:'wrap', gap:isMobile ? 12 : 16}}>
-              <div style={{display:'flex', alignItems:'center', gap:isMobile ? 8 : 12, flexWrap:'wrap'}}>
-                <div style={{background:'rgba(255,0,0,0.1)', color:'var(--primary)', padding:isMobile ? 6 : 8, borderRadius:8}}>
-                  <Calendar size={isMobile ? 18 : 20} />
-                </div>
-                <div style={{display:'flex', flexDirection:'column'}}>
-                  <span className="muted" style={{fontSize:isMobile ? 10 : 11, fontWeight:600, textTransform:'uppercase'}}>Analytical Range</span>
-                  <select className="input" value={range} onChange={e=>setRange(e.target.value)} style={{width:isMobile ? 140 : 180, border:'none', background:'transparent', paddingLeft:0, fontWeight:600, fontSize:isMobile ? 13 : 15}}>
-                    <option value="today">Today</option>
-                    <option value="yesterday">Yesterday</option>
-                    <option value="date">Specific Date</option>
-                    <option value="last7">Last 7 Days</option>
-                    <option value="month">This Month</option>
-                    <option value="all">All Time</option>
-                    <option value="custom">Custom Range</option>
-                  </select>
-                </div>
+      {/* Filter Section */}
+      <div className="dashboard-filter-card">
+        <div className="dashboard-filter-content">
+          <div className="dashboard-filter-left">
+            <div className="dashboard-filter-icon">
+              <Calendar size={18} />
+            </div>
+            <div className="dashboard-filter-select-group">
+              <label>Analytical Range</label>
+              <select className="dashboard-filter-select" value={range} onChange={e=>setRange(e.target.value)}>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="date">Specific Date</option>
+                <option value="last7">Last 7 Days</option>
+                <option value="month">This Month</option>
+                <option value="all">All Time</option>
+                <option value="custom">Custom Range</option>
+              </select>
+            </div>
 
-                {(range==='date' || range==='custom') && (
-                  <div className="row" style={{gap:isMobile ? 8 : 12, marginLeft:isMobile ? 8 : 12, paddingLeft:isMobile ? 8 : 12, borderLeft:'1px solid var(--border)', flexWrap:'wrap'}}>
-                    {range==='date' && (
-                      <div className="input-wrap" style={{minWidth:isMobile ? 130 : 160}}>
-                        <input ref={dateRef} className="input" type="date" value={dateOnly} onChange={e=>setDateOnly(e.target.value)} style={{height:38, fontSize:isMobile ? 13 : 14}} />
-                      </div>
-                    )}
-                    {range==='custom' && (
-                      <>
-                        <div className="input-wrap" style={{minWidth:isMobile ? 120 : 150}}>
-                          <input ref={fromRef} className="input" type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)} style={{height:38, fontSize:isMobile ? 13 : 14}} />
-                        </div>
-                        <span className="muted" style={{fontSize:isMobile ? 12 : 13}}>to</span>
-                        <div className="input-wrap" style={{minWidth:isMobile ? 120 : 150}}>
-                          <input ref={toRef} className="input" type="date" value={customTo} onChange={e=>setCustomTo(e.target.value)} style={{height:38, fontSize:isMobile ? 13 : 14}} />
-                        </div>
-                      </>
-                    )}
+            {(range==='date' || range==='custom') && (
+              <div className="dashboard-filter-dates">
+                {range==='date' && (
+                  <div className="input-wrap dashboard-filter-date-input">
+                    <input ref={dateRef} className="input" type="date" value={dateOnly} onChange={e=>setDateOnly(e.target.value)} style={{height:38, fontSize:13}} />
                   </div>
                 )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* KPI Grid */}
-        <div className="grid" style={{gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', gap: isMobile ? 10 : 16}}>
-          <KPICard
-            title="Gross Sales"
-            value={formatMoney(kpisToday.gross)}
-            icon={<TrendingUp size={isMobile ? 20 : 24} />}
-            bg="linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)"
-            isMobile={isMobile}
-          />
-          <KPICard
-            title="Net Profit"
-            value={formatMoney(kpisToday.netAfterReturns)}
-            icon={<Wallet size={isMobile ? 20 : 24} />}
-            bg="linear-gradient(135deg, #171717 0%, #262626 100%)"
-            highlight
-            isMobile={isMobile}
-          />
-          <KPICard
-            title="Refunded"
-            value={formatMoney(kpisToday.returned)}
-            icon={<RotateCcw size={isMobile ? 20 : 24} />}
-            bg="linear-gradient(135deg, #450a0a 0%, #991b1b 100%)"
-            isMobile={isMobile}
-          />
-          <KPICard
-            title="Discounts"
-            value={formatMoney(kpisToday.discount)}
-            icon={<Percent size={isMobile ? 20 : 24} />}
-            bg="linear-gradient(135deg, #171717 0%, #404040 100%)"
-            isMobile={isMobile}
-          />
-          <KPICard
-            title="Delivery"
-            value={formatMoney(kpisToday.deliveryCharges)}
-            icon={<Truck size={isMobile ? 20 : 24} />}
-            bg="linear-gradient(135deg, #450a0a 0%, #b91c1c 100%)"
-            isMobile={isMobile}
-          />
-          <KPICard
-            title="Token Count"
-            value={kpisToday.tokensGenerated}
-            icon={<Ticket size={isMobile ? 20 : 24} />}
-            bg="linear-gradient(135deg, #171717 0%, #525252 100%)"
-            isMobile={isMobile}
-          />
-        </div>
-
-        {/* Main Insights Grid */}
-        <div className="grid2" style={{gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: isMobile ? 12 : 20, alignItems: 'start'}}>
-          {/* Sales Chart */}
-          <Card style={{background: 'var(--panel)', border: '1px solid var(--border)', minHeight: isMobile ? 300 : 400}}>
-            <CardContent className="p-6" style={{padding: isMobile ? 12 : 24}}>
-              <div className="row" style={{justifyContent:'space-between', marginBottom: isMobile ? 16 : 24, flexWrap:'wrap', gap:8}}>
-                <CardTitle style={{fontSize:isMobile ? 16 : 18, display:'flex', alignItems:'center', gap:8}}>
-                  <History size={isMobile ? 18 : 20} style={{color:'var(--primary)'}} />
-                  <span>Sales performance</span>
-                </CardTitle>
-                <div className="muted" style={{fontSize:isMobile ? 11 : 12}}>Values in PKR</div>
-              </div>
-
-              {range === 'today' || range === 'yesterday' || range === 'date' ? (
-                 <div style={{height: isMobile ? 250 : 300, display:'flex', flexDirection:'column', justifyContent:'center'}}>
-                    {(() => {
-                      // Group sales by business date (bizId)
-                      const bizDateMap = new Map()
-                      sales.forEach(s => {
-                        const bizId = s.bizId || getBusinessDateId(s.createdAt || 0)
-                        const prev = bizDateMap.get(bizId) || 0
-                        bizDateMap.set(bizId, prev + (Number(s.total) || 0))
-                      })
-
-                      const sel = new Date(effectiveFrom)
-                      const y = sel.getFullYear(); const m = sel.getMonth()
-                      const daysInMonth = new Date(y, m+1, 0).getDate()
-
-                      const bizDates = Array.from({length: daysInMonth}, (_,i)=>{
-                        const day = i+1
-                        const bizId = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`
-                        return { day, bizId, total: bizDateMap.get(bizId) || 0 }
-                      })
-
-                      const maxM = Math.max(1, ...bizDates.map(b => b.total))
-                      const barWidth = isMobile ? 10 : 14
-                      const barSpacing = isMobile ? 20 : 28
-                      const width = Math.max(isMobile ? 320 : 500, daysInMonth * barSpacing + 40)
-                      return (
-                        <div style={{width:'100%', overflowX:'auto', paddingBottom:10}}>
-                          <svg width={width} height={isMobile ? 220 : 260} style={{display:'block', margin:'0 auto'}}>
-                            <defs>
-                              <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#ff4444" />
-                                <stop offset="100%" stopColor="#ff0000" />
-                              </linearGradient>
-                            </defs>
-                            {/* Horizontal grid lines */}
-                            {[0, 0.25, 0.5, 0.75, 1].map(p => (
-                              <line key={p} x1="30" y1={isMobile ? 180 : 210 - p*(isMobile ? 140 : 170)} x2={width-10} y2={isMobile ? 180 : 210 - p*(isMobile ? 140 : 170)} stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-                            ))}
-
-                            {bizDates.map(({day, bizId, total}, idx) => {
-                              const x = 40 + idx * barSpacing
-                              const barH = Math.max(2, (isMobile ? 140 : 170) * (total / maxM))
-                              const yBar = (isMobile ? 180 : 210) - barH
-                              return (
-                                <g key={idx}>
-                                  <rect x={x} y={yBar} width={barWidth} height={barH} fill="url(#barGrad)" rx="2" />
-                                  {idx % 2 === 0 && <text x={x + barWidth/2} y={isMobile ? 200 : 230} textAnchor="middle" fontSize={isMobile ? 8 : 10} fill="#666">{day}</text>}
-                                  {total > 0 && barH > 20 && <text x={x + barWidth/2} y={yBar - 6} textAnchor="middle" fontSize={isMobile ? 7 : 8} fill="#fff" fontWeight="600">{Math.round(total/1000)}k</text>}
-                                </g>
-                              )
-                            })}
-                            <line x1="30" y1={isMobile ? 180 : 210} x2={width-10} y2={isMobile ? 180 : 210} stroke="#333" />
-                          </svg>
-                        </div>
-                      )
-                    })()}
-                 </div>
-              ) : (
-                <div style={{height: isMobile ? 250 : 300}}>
-                   {series.length === 0 ? (
-                    <div className="muted" style={{height:'100%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:isMobile ? 13 : 14}}>No data available for this range</div>
-                  ) : (
-                    <div style={{width:'100%', overflowX:'auto'}}>
-                      <svg width={Math.max(isMobile ? 320 : 500, series.length*(isMobile ? 50 : 70))} height={isMobile ? 220 : 260}>
-                         {/* Horizontal grid lines */}
-                        {[0, 0.25, 0.5, 0.75, 1].map(p => (
-                          <line key={p} x1="40" y1={isMobile ? 170 : 200 - p*(isMobile ? 130 : 160)} x2={Math.max(isMobile ? 320 : 500, series.length*(isMobile ? 50 : 70))} y2={isMobile ? 170 : 200 - p*(isMobile ? 130 : 160)} stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-                        ))}
-                        {series.map(([date, val], idx) => {
-                          const x = 60 + idx*(isMobile ? 50 : 60)
-                          const h = Math.max(4, (isMobile ? 130 : 160) * (val / maxVal))
-                          const y = (isMobile ? 170 : 200) - h
-                          return (
-                            <g key={date}>
-                              <rect x={x} y={y} width={isMobile ? 28 : 32} height={h} fill="var(--primary)" rx="4" />
-                              <text x={x+(isMobile ? 14 : 16)} y={y-8} textAnchor="middle" fontSize={isMobile ? 8 : 10} fill="#fff">{Math.round(val/1000)}k</text>
-                              <text x={x+(isMobile ? 14 : 16)} y={isMobile ? 190 : 220} textAnchor="middle" fontSize={isMobile ? 8 : 10} fill="#a3a3a3">{date.slice(5)}</text>
-                            </g>
-                          )
-                        })}
-                        <line x1="40" y1={isMobile ? 170 : 200} x2={Math.max(isMobile ? 320 : 500, series.length*(isMobile ? 50 : 70))} y2={isMobile ? 170 : 200} stroke="#333" />
-                      </svg>
+                {range==='custom' && (
+                  <>
+                    <div className="input-wrap dashboard-filter-date-input">
+                      <input ref={fromRef} className="input" type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)} style={{height:38, fontSize:13}} />
                     </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    <span className="muted" style={{fontSize:12, fontWeight:600}}>to</span>
+                    <div className="input-wrap dashboard-filter-date-input">
+                      <input ref={toRef} className="input" type="date" value={customTo} onChange={e=>setCustomTo(e.target.value)} style={{height:38, fontSize:13}} />
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
-          {/* Distribution Chart */}
-          <Card style={{background: 'var(--panel)', border: '1px solid var(--border)', minHeight: isMobile ? 300 : 400}}>
-            <CardContent className="p-6" style={{padding: isMobile ? 12 : 24}}>
-              <CardTitle style={{fontSize:isMobile ? 16 : 18, display:'flex', alignItems:'center', gap:8, marginBottom: isMobile ? 16 : 24}}>
-                <Percent size={isMobile ? 18 : 20} style={{color:'var(--primary)'}} />
-                <span>Revenue Breakdown</span>
-              </CardTitle>
+      {/* KPI Cards Grid */}
+      <div className="dashboard-kpi-grid">
+        <KPICard
+          title="Gross Sales"
+          value={formatMoney(kpisToday.gross)}
+          icon={<TrendingUp size={20} />}
+          bg="linear-gradient(135deg, rgba(225,29,72,0.95) 0%, rgba(190,18,60,0.95) 100%)"
+        />
+        <KPICard
+          title="Net Profit"
+          value={formatMoney(kpisToday.netAfterReturns)}
+          icon={<Wallet size={20} />}
+          bg="linear-gradient(135deg, rgba(16,185,129,0.95) 0%, rgba(5,150,105,0.95) 100%)"
+        />
+        <KPICard
+          title="Refunded (Loss)"
+          value={formatMoney(kpisToday.returned)}
+          icon={<RotateCcw size={20} />}
+          bg="linear-gradient(135deg, rgba(239,68,68,0.95) 0%, rgba(185,28,28,0.95) 100%)"
+        />
+        <KPICard
+          title="Discounts"
+          value={formatMoney(kpisToday.discount)}
+          icon={<Percent size={20} />}
+          bg="linear-gradient(135deg, rgba(249,115,22,0.95) 0%, rgba(194,65,12,0.95) 100%)"
+        />
+        <KPICard
+          title="Delivery Charges"
+          value={formatMoney(kpisToday.deliveryCharges)}
+          icon={<Truck size={20} />}
+          bg="linear-gradient(135deg, rgba(99,102,241,0.95) 0%, rgba(79,70,229,0.95) 100%)"
+        />
+        <KPICard
+          title="Tokens Generated"
+          value={kpisToday.tokensGenerated}
+          icon={<Ticket size={20} />}
+          bg="linear-gradient(135deg, rgba(14,165,233,0.95) 0%, rgba(2,132,199,0.95) 100%)"
+        />
+      </div>
 
-              <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:isMobile ? 200 : 240}}>
+      {/* Main Insights Grid (Charts) */}
+      <div className="dashboard-insights-grid">
+        {/* Sales Performance Chart */}
+        <div className="dashboard-chart-card">
+          <div className="dashboard-chart-header">
+            <div className="dashboard-chart-title">
+              <History size={18} style={{color:'var(--primary)'}} />
+              <span>Sales Performance</span>
+            </div>
+            <div className="muted" style={{fontSize:11, fontWeight:600}}>Values in PKR</div>
+          </div>
+
+          <div className="dashboard-chart-body">
+            {range === 'today' || range === 'yesterday' || range === 'date' ? (
+              <div className="chart-scroll-container">
                 {(() => {
-                  const gross = kpisToday.gross
-                  const discount = kpisToday.discount
-                  const returned = kpisToday.returned
-                  const totalVal = Math.max(1, gross)
-                  const r = isMobile ? 60 : 80
-                  const cx = isMobile ? 90 : 110
-                  const cy = isMobile ? 90 : 110
-                  const C = 2*Math.PI*r
-                  const seg = (v) => Math.max(0, Math.min(C, (v/totalVal)*C))
-                  const discLen = seg(discount)
-                  const retLen = seg(returned)
-                  const netLen = seg(Math.max(0, gross - discount - returned))
+                  // Group sales by business date (bizId)
+                  const bizDateMap = new Map()
+                  sales.forEach(s => {
+                    const bizId = s.bizId || getBusinessDateId(s.createdAt || 0)
+                    const prev = bizDateMap.get(bizId) || 0
+                    bizDateMap.set(bizId, prev + (Number(s.total) || 0))
+                  })
+
+                  const sel = new Date(effectiveFrom)
+                  const y = sel.getFullYear(); const m = sel.getMonth()
+                  const daysInMonth = new Date(y, m+1, 0).getDate()
+
+                  const bizDates = Array.from({length: daysInMonth}, (_,i)=>{
+                    const day = i+1
+                    const bizId = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`
+                    return { day, bizId, total: bizDateMap.get(bizId) || 0 }
+                  })
+
+                  const maxM = Math.max(1, ...bizDates.map(b => b.total))
+                  const barWidth = 12
+                  const barSpacing = 22
+                  const chartWidth = Math.max(340, daysInMonth * barSpacing + 50)
+                  const chartHeight = 240
+                  const baseLineY = 200
+                  const maxBarHeight = 150
+
                   return (
-                    <svg width={cx*2} height={cy*2} viewBox={`0 0 ${cx*2} ${cy*2}`}>
-                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#262626" strokeWidth={isMobile ? 18 : 22} />
-                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#7f1d1d" strokeWidth={isMobile ? 18 : 22} strokeDasharray={`${discLen} ${C-discLen}`} transform={`rotate(-90 ${cx} ${cy})`} strokeLinecap="round" />
-                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#ef4444" strokeWidth={isMobile ? 18 : 22} strokeDasharray={`${retLen} ${C-retLen}`} transform={`rotate(${(discLen/C)*360 - 90} ${cx} ${cy})`} strokeLinecap="round" />
-                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#ffffff" strokeWidth={isMobile ? 18 : 22} strokeDasharray={`${netLen} ${C-netLen}`} transform={`rotate(${((discLen+retLen)/C)*360 - 90} ${cx} ${cy})`} strokeLinecap="round" />
-                      <g transform={`translate(${cx}, ${cy})`}>
-                        <text textAnchor="middle" dominantBaseline="middle" fontSize={isMobile ? 12 : 14} fontWeight="700" fill="#fff">NET</text>
-                        <text y={isMobile ? 16 : 20} textAnchor="middle" dominantBaseline="middle" fontSize={isMobile ? 9 : 11} fill="#a3a3a3">Revenue</text>
-                      </g>
+                    <svg width={chartWidth} height={chartHeight} style={{display:'block', margin:'0 auto'}}>
+                      <defs>
+                        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#f43f5e" />
+                          <stop offset="100%" stopColor="#be123c" />
+                        </linearGradient>
+                      </defs>
+                      {/* Horizontal grid lines */}
+                      {[0, 0.25, 0.5, 0.75, 1].map(p => (
+                        <line key={p} x1="30" y1={baseLineY - p*maxBarHeight} x2={chartWidth-15} y2={baseLineY - p*maxBarHeight} stroke="var(--border-subtle)" strokeDasharray="3" />
+                      ))}
+
+                      {bizDates.map(({day, total}, idx) => {
+                        const x = 35 + idx * barSpacing
+                        const barH = Math.max(total > 0 ? 4 : 1, maxBarHeight * (total / maxM))
+                        const yBar = baseLineY - barH
+                        return (
+                          <g key={idx}>
+                            <rect x={x} y={yBar} width={barWidth} height={barH} fill="url(#barGrad)" rx="3" opacity={total > 0 ? 1 : 0.2} />
+                            {idx % 2 === 0 && <text x={x + barWidth/2} y={baseLineY + 16} textAnchor="middle" fontSize={9} fill="var(--muted)" fontWeight="600">{day}</text>}
+                            {total > 0 && barH > 18 && (
+                              <text x={x + barWidth/2} y={yBar - 6} textAnchor="middle" fontSize={8} fill="var(--text)" fontWeight="700">
+                                {Math.round(total/1000)}k
+                              </text>
+                            )}
+                          </g>
+                        )
+                      })}
+                      <line x1="30" y1={baseLineY} x2={chartWidth-15} y2={baseLineY} stroke="var(--border)" strokeWidth="1.5" />
                     </svg>
                   )
                 })()}
               </div>
+            ) : (
+              <div className="chart-scroll-container">
+                {series.length === 0 ? (
+                  <div className="muted" style={{height: 200, display:'flex', alignItems:'center', justifyContent:'center', fontSize: 13}}>
+                    No sales data recorded for this range
+                  </div>
+                ) : (
+                  (() => {
+                    const barWidth = 28
+                    const colWidth = 56
+                    const chartWidth = Math.max(340, series.length * colWidth + 60)
+                    const chartHeight = 240
+                    const baseLineY = 190
+                    const maxBarHeight = 140
 
-              <div style={{marginTop: isMobile ? 16 : 20, display:'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(auto-fit, minmax(130px, 1fr))', gap: isMobile ? 8 : 12}}>
-                <LegendItem color="#ffffff" label="Net Revenue" value={formatMoney(Math.max(0, kpisToday.gross - kpisToday.discount - kpisToday.returned))} isMobile={isMobile} />
-                <LegendItem color="#ef4444" label="Refunded" value={formatMoney(kpisToday.returned)} isMobile={isMobile} />
-                <LegendItem color="#7f1d1d" label="Discount" value={formatMoney(kpisToday.discount)} isMobile={isMobile} />
-                <LegendItem color="#262626" label="Other" value="Rs.0.00" isMobile={isMobile} />
+                    return (
+                      <svg width={chartWidth} height={chartHeight} style={{display:'block', margin:'0 auto'}}>
+                        {[0, 0.25, 0.5, 0.75, 1].map(p => (
+                          <line key={p} x1="35" y1={baseLineY - p*maxBarHeight} x2={chartWidth-15} y2={baseLineY - p*maxBarHeight} stroke="var(--border-subtle)" strokeDasharray="3" />
+                        ))}
+                        {series.map(([date, val], idx) => {
+                          const x = 45 + idx * colWidth
+                          const h = Math.max(4, maxBarHeight * (val / maxVal))
+                          const y = baseLineY - h
+                          return (
+                            <g key={date}>
+                              <rect x={x} y={y} width={barWidth} height={h} fill="var(--primary)" rx="4" />
+                              <text x={x + barWidth/2} y={y - 6} textAnchor="middle" fontSize={9} fill="var(--text)" fontWeight="700">
+                                {Math.round(val/1000)}k
+                              </text>
+                              <text x={x + barWidth/2} y={baseLineY + 16} textAnchor="middle" fontSize={9} fill="var(--muted)" fontWeight="600">
+                                {date.slice(5)}
+                              </text>
+                            </g>
+                          )
+                        })}
+                        <line x1="35" y1={baseLineY} x2={chartWidth-15} y2={baseLineY} stroke="var(--border)" strokeWidth="1.5" />
+                      </svg>
+                    )
+                  })()
+                )}
               </div>
-            </CardContent>
-          </Card>
+            )}
+          </div>
         </div>
 
-        {/* Yesterday Snapshot */}
-        <Card style={{background: 'linear-gradient(to right, #0a0a0a, #111)', border: '1px solid var(--border)'}}>
-          <CardContent className="p-4" style={{padding: isMobile ? 12 : 16}}>
-            <div className="row" style={{justifyContent:'space-between', marginBottom: isMobile ? 10 : 12, flexWrap:'wrap', gap:8}}>
-              <div style={{display:'flex', alignItems:'center', gap:isMobile ? 8 : 10}}>
-                <div style={{background:'rgba(255,255,255,0.05)', padding:isMobile ? 6 : 8, borderRadius:8}}>
-                  <History size={isMobile ? 16 : 18} />
-                </div>
-                <CardTitle style={{fontSize:isMobile ? 14 : 16, margin:0}}>Yesterday's closing snapshot</CardTitle>
-              </div>
-              <div style={{fontSize:isMobile ? 11 : 12, color:'var(--muted)'}}>Comparative metrics</div>
+        {/* Revenue Breakdown (Donut Chart) */}
+        <div className="dashboard-chart-card">
+          <div className="dashboard-chart-header">
+            <div className="dashboard-chart-title">
+              <Percent size={18} style={{color:'var(--primary)'}} />
+              <span>Revenue Breakdown</span>
+            </div>
+            <div className="muted" style={{fontSize:11, fontWeight:600}}>Live Share</div>
+          </div>
+
+          <div className="dashboard-chart-body">
+            <div className="donut-center-wrap">
+              {(() => {
+                const gross = kpisToday.gross
+                const discount = kpisToday.discount
+                const returned = kpisToday.returned
+                const totalVal = Math.max(1, gross)
+                const r = 68
+                const cx = 100
+                const cy = 100
+                const C = 2 * Math.PI * r
+                const seg = (v) => Math.max(0, Math.min(C, (v/totalVal)*C))
+                const discLen = seg(discount)
+                const retLen = seg(returned)
+                const netLen = seg(Math.max(0, gross - discount - returned))
+
+                return (
+                  <svg width="200" height="200" viewBox="0 0 200 200" style={{maxWidth:'100%', height:'auto'}}>
+                    <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--border)" strokeWidth={18} />
+                    {discLen > 0 && (
+                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#f97316" strokeWidth={18} strokeDasharray={`${discLen} ${C-discLen}`} transform={`rotate(-90 ${cx} ${cy})`} strokeLinecap="round" />
+                    )}
+                    {retLen > 0 && (
+                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#ef4444" strokeWidth={18} strokeDasharray={`${retLen} ${C-retLen}`} transform={`rotate(${(discLen/C)*360 - 90} ${cx} ${cy})`} strokeLinecap="round" />
+                    )}
+                    {netLen > 0 && (
+                      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#10b981" strokeWidth={18} strokeDasharray={`${netLen} ${C-netLen}`} transform={`rotate(${((discLen+retLen)/C)*360 - 90} ${cx} ${cy})`} strokeLinecap="round" />
+                    )}
+                    <g transform={`translate(${cx}, ${cy})`}>
+                      <text textAnchor="middle" dominantBaseline="middle" fontSize={14} fontWeight="800" fill="var(--text)">NET</text>
+                      <text y={16} textAnchor="middle" dominantBaseline="middle" fontSize={10} fill="var(--muted)" fontWeight="600">Revenue</text>
+                    </g>
+                  </svg>
+                )
+              })()}
             </div>
 
-            <div className="grid" style={{gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(140px, 1fr))', gap: isMobile ? 8 : 12}}>
-              <MiniStat label="Sales" value={formatMoney(yesterday.gross||0)} isMobile={isMobile} />
-              <MiniStat label="Net" value={formatMoney(yesterday.net||0)} isMobile={isMobile} />
-              <MiniStat label="Refund" value={formatMoney(yesterday.returned||0)} isMobile={isMobile} />
-              <MiniStat label="Discount" value={formatMoney(yesterday.discount||0)} isMobile={isMobile} />
-              <MiniStat label="Orders" value={yesterday.tokensGenerated||0} isMobile={isMobile} />
+            <div className="donut-legend-grid">
+              <LegendItem color="#10b981" label="Net Revenue" value={formatMoney(Math.max(0, kpisToday.gross - kpisToday.discount - kpisToday.returned))} />
+              <LegendItem color="#ef4444" label="Refunded" value={formatMoney(kpisToday.returned)} />
+              <LegendItem color="#f97316" label="Discount" value={formatMoney(kpisToday.discount)} />
+              <LegendItem color="var(--primary)" label="Gross Sales" value={formatMoney(kpisToday.gross)} />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Yesterday Closing Snapshot */}
+      <div className="snapshot-card">
+        <div className="dashboard-chart-header" style={{marginBottom: 8}}>
+          <div className="dashboard-chart-title">
+            <History size={18} style={{color:'var(--primary)'}} />
+            <span>Yesterday's Closing Snapshot</span>
+          </div>
+          <div className="muted" style={{fontSize:11, fontWeight:600}}>Comparative Benchmark</div>
+        </div>
+
+        <div className="snapshot-grid">
+          <MiniStat label="Sales (Gross)" value={formatMoney(yesterday?.gross || 0)} />
+          <MiniStat label="Net Profit" value={formatMoney(yesterday?.net || 0)} />
+          <MiniStat label="Refunds" value={formatMoney(yesterday?.returned || 0)} />
+          <MiniStat label="Discounts" value={formatMoney(yesterday?.discount || 0)} />
+          <MiniStat label="Total Orders" value={yesterday?.tokensGenerated || 0} />
+        </div>
       </div>
     </section>
   )
 }
 
-function KPICard({ title, value, icon, bg, highlight, isMobile }) {
+function KPICard({ title, value, icon, bg }) {
   return (
-    <div className="kpi" style={{
-      background: bg,
-      padding: isMobile ? 12 : 20,
-      borderRadius: isMobile ? 14 : 20,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      position: 'relative',
-      overflow: 'hidden',
-      border: highlight ? '1px solid rgba(255,255,255,0.1)' : 'none',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.4)'
-    }}>
-      <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
-        <div style={{fontSize: isMobile ? 12 : 14, fontWeight: 500, opacity: 0.8}}>{title}</div>
-        <div style={{opacity: 0.3}}>{icon}</div>
+    <div className="dashboard-kpi-card" style={{ background: bg }}>
+      <div className="dashboard-kpi-top">
+        <span className="dashboard-kpi-title">{title}</span>
+        <span className="dashboard-kpi-icon">{icon}</span>
       </div>
-      <div style={{fontSize: isMobile ? 22 : 32, fontWeight: 800, marginTop: isMobile ? 8 : 12}}>{value}</div>
-      {highlight && (
-        <div style={{
-          position: 'absolute',
-          right: '-20px',
-          bottom: '-20px',
-          width: '100px',
-          height: '100px',
-          background: 'rgba(255,0,0,0.05)',
-          borderRadius: '50%',
-          filter: 'blur(30px)'
-        }} />
-      )}
+      <div className="dashboard-kpi-value">{value}</div>
     </div>
   )
 }
 
-function MiniStat({ label, value, isMobile }) {
+function MiniStat({ label, value }) {
   return (
-    <div style={{padding: isMobile ? 8 : 10, background: 'rgba(255,255,255,0.03)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)'}}>
-      <div className="muted" style={{fontSize: isMobile ? 9 : 10, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4}}>{label}</div>
-      <div style={{fontSize: isMobile ? 13 : 14, fontWeight: 700}}>{value}</div>
+    <div className="snapshot-item">
+      <div className="snapshot-item-label">{label}</div>
+      <div className="snapshot-item-val">{value}</div>
     </div>
   )
 }
 
-function LegendItem({ color, label, value, isMobile }) {
+function LegendItem({ color, label, value }) {
   return (
-    <div className="row" style={{gap: isMobile ? 6 : 8, alignItems:'center', padding: isMobile ? 6 : 8, background: 'rgba(255,255,255,0.02)', borderRadius: 8}}>
-      <div style={{width: isMobile ? 6 : 8, height: isMobile ? 6 : 8, background: color, borderRadius: 2}} />
-      <div style={{display:'flex', flexDirection:'column'}}>
-        <span style={{fontSize: isMobile ? 9 : 10, color: 'var(--muted)', fontWeight: 600}}>{label}</span>
-        <span style={{fontSize: isMobile ? 11 : 12, fontWeight: 700}}>{value}</span>
+    <div className="legend-badge">
+      <div className="legend-badge-dot" style={{ background: color }} />
+      <div className="legend-badge-text">
+        <span className="legend-badge-label">{label}</span>
+        <span className="legend-badge-val">{value}</span>
       </div>
     </div>
   )

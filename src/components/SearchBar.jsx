@@ -11,14 +11,23 @@ export default function SearchBar({ placeholder = 'Search...', onChange }) {
   }, [q, onChange])
 
   return (
-    <div style={{ position:'relative', minWidth: 260 }}>
-      <SearchIcon size={18} style={{ position:'absolute', left: 10, top: '50%', transform:'translateY(-50%)', color:'#94a3b8' }} />
+    <div style={{ position: 'relative', width: '100%', maxWidth: 320 }}>
+      <SearchIcon size={17} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', pointerEvents: 'none' }} />
       <Input
         type="text"
         placeholder={placeholder}
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        style={{ height: 44, borderRadius: 12, paddingLeft: 36, fontSize: 15, boxShadow:'inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 0 rgba(0,0,0,0.02)'}}
+        style={{
+          height: 42,
+          borderRadius: 12,
+          paddingLeft: 42,
+          paddingRight: 14,
+          fontSize: 14,
+          background: 'var(--input-bg)',
+          borderColor: 'var(--border)',
+          color: 'var(--text)',
+        }}
       />
     </div>
   )

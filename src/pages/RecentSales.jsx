@@ -230,14 +230,14 @@ export default function RecentSales() {
           <div>
             <div className="card-title">{restaurantInfo?.name || 'Restaurant'}</div>
           </div>
-          <div className="row" style={{ gap: 8, alignItems: 'center' }}>
+          <div className="row" style={{ gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
             <label className="muted">Date:</label>
             <input 
               className="input" 
               type="date" 
               value={selectedDate} 
               onChange={(e) => setSelectedDate(e.target.value)}
-              style={{ width: 200 }}
+              style={{ width: 'min(200px, 100%)' }}
             />
             <button className="btn primary" onClick={() => setReportOpen(true)}>Show Report</button>
           </div>
@@ -365,31 +365,33 @@ export default function RecentSales() {
         </div>
       )}
 
-      <div className="card">
-        <div className="bill-head" style={{ gridTemplateColumns: '140px 80px 1fr 2fr 120px 100px 180px' }}>
-          <div>Time</div>
-          <div>Token</div>
-          <div>Customer</div>
-          <div>Items</div>
-          <div>Order Type</div>
-          <div>Total</div>
-          <div>Actions</div>
-        </div>
-        {mySales.length === 0 && <div className="muted">No sales yet.</div>}
-        {mySales.map(rec => (
-          <div key={rec.id} className="bill-row" style={{ gridTemplateColumns: '140px 80px 1fr 2fr 120px 100px 180px' }}>
-            <div>{new Date(rec.createdAt || Date.now()).toLocaleTimeString()}</div>
-            <div>{rec.token || '-'}</div>
-            <div className="grow">{rec.customerName || '-'}</div>
-            <div>{(rec.items || []).map(i => `${i.qty} x ${i.name}`).join(', ') || '-'}</div>
-            <div>{rec.orderType || '-'}</div>
-            <div className="price">{formatMoney(rec.total)}</div>
-            <div className="row" style={{ justifyContent: 'flex-start', gap: 8 }}>
-              <button className="btn" style={{ background: '#ff0000', borderColor: '#ff0000', color: '#fff' }} onClick={() => reprint(rec)}>Reprint</button>
-              <button className="btn danger" disabled={alreadyReturned(rec.id)} onClick={() => doReturn(rec)}>{alreadyReturned(rec.id) ? 'Refunded' : 'Refund'}</button>
-            </div>
+      <div className="card" style={{padding:0, overflow:'hidden'}}>
+        <div className="table-scroll-wrap">
+          <div className="bill-head" style={{ gridTemplateColumns: '120px 70px 1fr 2fr 110px 90px 180px' }}>
+            <div>Time</div>
+            <div>Token</div>
+            <div>Customer</div>
+            <div>Items</div>
+            <div>Order Type</div>
+            <div>Total</div>
+            <div>Actions</div>
           </div>
-        ))}
+          {mySales.length === 0 && <div className="muted" style={{padding:'12px 14px'}}>No sales yet.</div>}
+          {mySales.map(rec => (
+            <div key={rec.id} className="bill-row" style={{ gridTemplateColumns: '120px 70px 1fr 2fr 110px 90px 180px' }}>
+              <div>{new Date(rec.createdAt || Date.now()).toLocaleTimeString()}</div>
+              <div>{rec.token || '-'}</div>
+              <div className="grow">{rec.customerName || '-'}</div>
+              <div style={{wordBreak:'break-word'}}>{(rec.items || []).map(i => `${i.qty} x ${i.name}`).join(', ') || '-'}</div>
+              <div>{rec.orderType || '-'}</div>
+              <div className="price">{formatMoney(rec.total)}</div>
+              <div className="row" style={{ justifyContent: 'flex-start', gap: 6, flexWrap:'wrap' }}>
+                <button className="btn" style={{ background: '#ff0000', borderColor: '#ff0000', color: '#fff', fontSize:12, padding:'6px 10px' }} onClick={() => reprint(rec)}>Reprint</button>
+                <button className="btn danger" style={{fontSize:12, padding:'6px 10px'}} disabled={alreadyReturned(rec.id)} onClick={() => doReturn(rec)}>{alreadyReturned(rec.id) ? 'Refunded' : 'Refund'}</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   )

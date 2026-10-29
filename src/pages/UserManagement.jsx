@@ -126,33 +126,37 @@ export default function UserManagement(){
         </div>
       </div>
 
-      <div className="card" style={{marginTop:12}}>
-        <div className="row header-row" style={{alignItems:'center'}}>
-          <div className="big">Users</div>
-          <div className="row" style={{gap:8}}>
-            <input className="input" placeholder="Search users..." value={filter} onChange={e=>setFilter(e.target.value)} />
-          </div>
-        </div>
-        <div className="bill-head" style={{gridTemplateColumns:'1fr 160px 160px 160px 160px'}}>
-          <div>Name</div>
-          <div>Role</div>
-          <div>Username</div>
-          <div>Password</div>
-          <div>Actions</div>
-        </div>
-        {filteredUsers.length===0 && <div className="muted">No users.</div>}
-        {filteredUsers.map(u => (
-          <div key={u.id} className="bill-row" style={{gridTemplateColumns:'1fr 160px 160px 160px 160px'}}>
-            <div className="grow">{u.name}</div>
-            <div>{u.role||'-'}</div>
-            <div>{u.username}</div>
-            <div>{u.password ? '••••••' : '-'}</div>
-            <div className="row" style={{justifyContent:'flex-start'}}>
-              <button className="btn" onClick={()=>onEdit(u)}>Edit</button>
-              <button className="btn danger" onClick={()=>onDelete(u.id)}>Delete</button>
+      <div className="card" style={{marginTop:12, padding:0, overflow:'hidden'}}>
+        <div style={{padding:'14px 14px 0'}}>
+          <div className="row header-row" style={{alignItems:'center', marginBottom:12}}>
+            <div className="big">Users</div>
+            <div className="row" style={{gap:8}}>
+              <input className="input" placeholder="Search users..." value={filter} onChange={e=>setFilter(e.target.value)} style={{minWidth:160}} />
             </div>
           </div>
-        ))}
+        </div>
+        <div className="table-scroll-wrap">
+          <div className="bill-head" style={{gridTemplateColumns:'1fr 140px 140px 100px 160px'}}>
+            <div>Name</div>
+            <div>Role</div>
+            <div>Username</div>
+            <div>Password</div>
+            <div>Actions</div>
+          </div>
+          {filteredUsers.length===0 && <div className="muted" style={{padding:'12px 14px'}}>No users.</div>}
+          {filteredUsers.map(u => (
+            <div key={u.id} className="bill-row" style={{gridTemplateColumns:'1fr 140px 140px 100px 160px'}}>
+              <div className="grow">{u.name}</div>
+              <div>{u.role||'-'}</div>
+              <div>{u.username}</div>
+              <div>{u.password ? '••••••' : '-'}</div>
+              <div className="row" style={{justifyContent:'flex-start', gap:6}}>
+                <button className="btn" style={{fontSize:12, padding:'6px 10px'}} onClick={()=>onEdit(u)}>Edit</button>
+                <button className="btn danger" style={{fontSize:12, padding:'6px 10px'}} onClick={()=>onDelete(u.id)}>Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

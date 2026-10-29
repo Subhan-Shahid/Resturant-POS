@@ -453,32 +453,31 @@ export default function UnifiedPos() {
         </div>
 
         <div className="order-actions" style={{marginTop: '16px'}}>
-          <div className="quick-pay-buttons" style={{display:'grid', gridTemplateColumns:isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:isMobile ? 6 : 8, width:'100%', marginBottom:8}}>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 10)}>Rs.10</button>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 100)}>Rs.100</button>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 500)}>Rs.500</button>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:isMobile ? 36 : 40}} onClick={() => setPaidAmount((prev) => (prev || 0) + 1000)}>Rs.1000</button>
+          <div className="quick-pay-buttons" style={{display:'grid', gridTemplateColumns:isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:isMobile ? 6 : 8, width:'100%', marginBottom:10}}>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 10)}>+Rs.10</button>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 100)}>+Rs.100</button>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 500)}>+Rs.500</button>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 1000)}>+Rs.1000</button>
           </div>
           <button
-            className="btn"
+            className="btn primary"
             style={{
               width: '100%',
-              backgroundColor: '#ff0000',
-              color: 'white',
-              height: isMobile ? 44 : 48,
-              borderRadius: 12,
-              fontWeight: 700,
+              height: isMobile ? 46 : 50,
+              borderRadius: 14,
+              fontWeight: 800,
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 8,
-              fontSize: isMobile ? 14 : 15
+              gap: 10,
+              fontSize: isMobile ? 14 : 15,
+              letterSpacing: '0.01em'
             }}
             onClick={handleOkDone}
             disabled={cart.length===0}
           >
-            <Printer size={isMobile ? 16 : 18} />
-            Print Invoice
+            <Printer size={isMobile ? 17 : 19} />
+            Complete & Print Receipt
           </button>
         </div>
       </>
@@ -496,20 +495,22 @@ export default function UnifiedPos() {
           </div>
         )}
 
-        <div className="card pos-header-card" style={{marginBottom:isMobile ? 10 : 12, padding:isMobile ? 12 : 16}}>
-          <div className="row header-row" style={{marginBottom:isMobile ? 8 : 12, flexWrap:'wrap', gap:8}}>
-            <h1 className="page-title" style={{fontSize:isMobile ? 18 : 26}}>POS Billing</h1>
-            <SearchBar onChange={setQuery} placeholder="Search menu items..." />
+        <div className="card pos-header-card" style={{ marginBottom: isMobile ? 12 : 16, background: 'var(--panel-elevated)', backdropFilter: 'blur(16px)' }}>
+          <div className="row header-row" style={{ marginBottom: 12, flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 10, height: 26, background: 'var(--primary-gradient)', borderRadius: 4 }}></div>
+              <h1 className="page-title" style={{ fontSize: isMobile ? 20 : 24, margin: 0 }}>Menu & Billing</h1>
+            </div>
+            <SearchBar onChange={setQuery} placeholder="Search dishes, drinks, extras..." />
           </div>
 
           {/* Category Tabs */}
-          <div className="tabs" role="tablist" aria-label="Categories" style={{gap:isMobile ? 4 : 8}}>
+          <div className="tabs" role="tablist" aria-label="Categories">
             {tabs.map(t => (
               <button
                 key={t.id}
                 className={`tab ${activeCategory === t.id ? 'active' : ''}`}
                 onClick={() => setActiveCategory(t.id)}
-                style={{fontSize:isMobile ? 12 : 13, padding:isMobile ? '8px 12px' : '8px 16px'}}
               >
                 {t.label}
               </button>
@@ -780,31 +781,31 @@ export default function UnifiedPos() {
         </div>
 
         <div className="order-actions">
-          <div className="quick-pay-buttons" style={{display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, width:'100%', marginBottom:8}}>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:36}} onClick={() => setPaidAmount((prev) => (prev || 0) + 10)}>Rs.10</button>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:36}} onClick={() => setPaidAmount((prev) => (prev || 0) + 100)}>Rs.100</button>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:36}} onClick={() => setPaidAmount((prev) => (prev || 0) + 500)}>Rs.500</button>
-            <button className="btn" style={{backgroundColor: '#ff0000', color: 'white', height:36}} onClick={() => setPaidAmount((prev) => (prev || 0) + 1000)}>Rs.1000</button>
+          <div className="quick-pay-buttons" style={{display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, width:'100%', marginBottom:12}}>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 10)}>+Rs.10</button>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 100)}>+Rs.100</button>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 500)}>+Rs.500</button>
+            <button className="btn" onClick={() => setPaidAmount((prev) => (prev || 0) + 1000)}>+Rs.1000</button>
           </div>
           <button
-            className="btn"
+            className="btn primary"
             style={{
               width: '100%',
-              backgroundColor: '#ff0000',
-              color: 'white',
-              height: 48,
-              borderRadius: 12,
-              fontWeight: 700,
+              height: 50,
+              borderRadius: 14,
+              fontWeight: 800,
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 8,
+              gap: 10,
+              fontSize: 15,
+              letterSpacing: '0.01em'
             }}
             onClick={handleOkDone}
             disabled={cart.length===0}
           >
-            <Printer size={18} />
-            Print Invoice
+            <Printer size={19} />
+            Complete & Print Receipt
           </button>
         </div>
       </aside>

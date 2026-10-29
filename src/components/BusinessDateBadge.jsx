@@ -20,8 +20,10 @@ export default function BusinessDateBadge(){
   }, [])
 
   return (
-    <div style={{display:'flex', justifyContent:'flex-end'}}>
-      <div className="muted" style={{fontSize:12}}>Business Date: <b>{bizDate || '-'}</b></div>
+    <div className="biz-date-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--badge-bg)', border: '1px solid var(--border)', borderRadius: 999, padding: '5px 12px', backdropFilter: 'blur(10px)', maxWidth: '100%', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+      <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981', display: 'inline-block', flexShrink: 0 }}></span>
+      <span style={{ color: 'var(--muted)', fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 500 }}>Business Date:</span>
+      <span style={{ color: 'var(--text)', fontSize: 'clamp(11px, 2.8vw, 13px)', fontWeight: 700, letterSpacing: '0.02em' }}>{bizDate || 'Not Set'}</span>
     </div>
   )
 }
